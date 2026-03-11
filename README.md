@@ -5,7 +5,7 @@ Repositório backend
 - 
 
 Repositório frontend
-- 
+- https://github.com/senai-661/estrelinhas-frontend.git
 
 Repositório Mobile
 - 
