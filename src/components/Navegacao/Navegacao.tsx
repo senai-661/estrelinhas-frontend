@@ -21,8 +21,7 @@ function Navegacao(): JSX.Element {
 
     const nome = localStorage.getItem('nome') || 'Usuário';
     const email = localStorage.getItem('email') || '';
-    const avatarImage = "https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png";
-
+   
     const items: CustomMenuItem[] = [
         {
             label: 'Home',
@@ -62,20 +61,20 @@ function Navegacao(): JSX.Element {
     );
 
     const userActions = isAuthenticated ? (
-        <div className="flex items-center justify-end items-center mr-10 gap-4">
-            <div className="flex flex-col pr-3">
-                <p className="text-white font-semibold m-0">{nome}</p>
-                <p className="text-white text-sm m-0">{email}</p>
+        <div className="flex items-center justify-end gap-6 mr-6">
+            <div className="flex flex-col pr-3 border-r border-orange-500 pr-6">
+                <p className="text-white font-semibold m-0 text-sm">{nome}</p>
+                <p className="text-gray-400 text-xs m-0">{email}</p>
             </div>
             <Avatar
-                image={avatarImage}
+                
                 shape="circle"
-                className="!w-[10%] !h-[10%]"
+                className="!w-10 !h-10 !bg-orange-500"
             />
             <button
-                className="bg-white ml-6 text-slate-700 px-10 py-5 rounded border-none cursor-pointer flex items-center justify-center gap-1 hover:bg-gray-100 transition-colors"
+                className="bg-orange-500 hover:bg-orange-600 transition-all text-white px-6 py-2 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-orange-500/50"
                 onClick={AuthRequests.removeToken}
-                style={{ height: '32px', fontSize: '14px' }}
+                style={{ height: '40px', fontSize: '14px' }}
             >
                 <i className="pi pi-sign-out"></i>
                 <span>Sair</span>
@@ -83,9 +82,9 @@ function Navegacao(): JSX.Element {
         </div>
     ) : (
         <button
-            className="bg-white font-bold text-slate-700 px-10 py-5 mr-10 rounded border-none cursor-pointer flex items-center justify-center gap-1 hover:bg-gray-100 transition-colors"
+            className="bg-orange-500 hover:bg-orange-600 transition-all font-bold text-white px-8 py-2 mr-6 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 shadow-lg hover:shadow-orange-500/50"
             onClick={() => navigate('/login')}
-            style={{ height: '32px', fontSize: '14px' }}
+            style={{ height: '40px', fontSize: '14px' }}
         >
             <i className="pi pi-sign-in"></i>
             <span>Login</span>
@@ -93,11 +92,17 @@ function Navegacao(): JSX.Element {
     );
 
     return (
-        <header className="card h-[12vh] bg-slate-700 flex items-center px-4">
+        <header className="card h-[12vh] bg-black shadow-2xl flex items-center px-6 border-b-4 border-orange-500">
             <div className="flex-1">
                 <Menubar
                     model={items}
                     start={start}
+                    className="!bg-black !border-0 !p-0"
+                    style={{
+                        backgroundColor: 'black',
+                        border: 'none',
+                        boxShadow: 'none'
+                    }}
                 />
             </div>
             {userActions}
