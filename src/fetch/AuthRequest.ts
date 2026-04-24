@@ -8,9 +8,10 @@ class AuthRequests {
         this.endpointLogin = '/api/login';
     }
 
-    async login(login: { email: string, senha: string }): Promise<boolean> {
+    async login(login: { email: string, senha: string }) {
         try {
 
+            // valida dominio do email
             if (!login.email.includes('@adigital.com.br')) {
                 alert('Use um email com domínio @adigital.com.br');
                 return false;
@@ -43,7 +44,7 @@ class AuthRequests {
             return false;
 
         } catch (error) {
-            console.log('Erro no login:', error);
+            console.log(error);
             return false;
         }
     }
@@ -55,7 +56,7 @@ class AuthRequests {
         localStorage.setItem('isAuth', isAuth.toString());
     }
 
-    logout() {
+    removeToken() {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         localStorage.removeItem('idUsuario');
@@ -64,26 +65,23 @@ class AuthRequests {
         window.location.href = '/login';
     }
 
-    isAuthenticated(): boolean {
+    checkTokenExpiry() {
         const token = localStorage.getItem('token');
 
         if (!token) return false;
 
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const now = Math.floor(Date.now() / 1000);
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const now = Math.floor(Date.now() / 1000);
 
-            if (payload.exp < now) {
-                this.logout();
-                return false;
-            }
-
-            return true;
-        } catch {
-            this.logout();
+        if (payload.exp < now) {
+            this.removeToken();
             return false;
         }
+
+        return true;
     }
 }
 
 export default new AuthRequests();
+
+
