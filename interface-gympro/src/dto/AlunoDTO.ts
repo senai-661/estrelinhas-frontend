@@ -8,3 +8,4 @@ export default interface AlunoDTO {
     celular?: string
     status_aluno?: boolean
 }
+
