@@ -1,3 +1,5 @@
+import PlanoDTO from "../dto/PlanoDTO";
+
 class PlanoRequests {
     private serverURL;
     private endpointPlano;
@@ -7,7 +9,7 @@ class PlanoRequests {
         this.endpointPlano = `/api/planos`;
     }
 
-    async obterListaDePlanos() {
+    async obterListaDePlanos(): Promise<PlanoDTO[] | undefined> {
         try {
             const token = localStorage.getItem('token');
 
@@ -19,13 +21,13 @@ class PlanoRequests {
             });
 
             if (respostaAPI.ok) {
-                const listaDePlanos = await respostaAPI.json();
+                const listaDePlanos: PlanoDTO[] = await respostaAPI.json();
                 return listaDePlanos;
             } else {
                 throw new Error("Não foi possível listar os planos.");
             }
         } catch (error) {
-            console.error(`Erro ao fazer a consulta de planos. ${error}`);
+            console.error(`Erro ao buscar planos. ${error}`);
             return;
         }
     }
