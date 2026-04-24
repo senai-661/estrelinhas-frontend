@@ -4,6 +4,8 @@ import type { MenuItem } from 'primereact/menuitem';
 import { Avatar } from 'primereact/avatar';
 import { useNavigate } from 'react-router-dom';
 import AuthRequests from "../../fetch/AuthRequests";
+import logo from "../../assets/ChatGPT_Image_24_de_abr._de_2026__14_18_05-removebg-preview.png";
+import professorFoto from "../../assets/4364004.webp";
 
 interface CustomMenuItem extends MenuItem {
     badge?: number;
@@ -26,26 +28,26 @@ function Navegacao(): JSX.Element {
         {
             label: 'Home',
             icon: 'pi pi-home',
-            className: 'm-5 text-white text-lg',
+            className: 'm-5 text-lg',
             url: "/"
         },
         ...(isAuthenticated ? [
             {
                 label: 'Alunos',
                 icon: 'pi pi-users',
-                className: 'm-5 text-white text-lg',
+                className: 'm-5 text-lg',
                 url: "/lista/alunos"
             },
             {
                 label: 'Planos',
                 icon: 'pi pi-id-card',
-                className: 'm-5 text-white text-lg',
+                className: 'm-5 text-lg',
                 url: "/lista/planos"
             },
             {
                 label: 'Matrículas',
                 icon: 'pi pi-file-edit',
-                className: 'm-5 text-white text-lg',
+                className: 'm-5 text-lg',
                 url: "/lista/matriculas"
             }
         ] : [])
@@ -54,22 +56,21 @@ function Navegacao(): JSX.Element {
     const start = (
         <img
             alt="logo"
-            src='./src/assets/app-icon.png'
-            height="100"
-            className="w-[40%] max-w-[40%] ml-10"
+            src={logo}
+            style={{ width: '140px', maxWidth: '140px', marginLeft: '10px' }}
         />
     );
 
     const userActions = isAuthenticated ? (
-        <div className="flex items-center justify-end gap-6 mr-6">
-            <div className="flex flex-col pr-3 border-r border-orange-500 pr-6">
-                <p className="text-white font-semibold m-0 text-sm">{nome}</p>
-                <p className="text-gray-400 text-xs m-0">{email}</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '24px', marginRight: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', paddingRight: '24px', borderRight: '1px solid rgba(255, 115, 0, 0.35)' }}>
+                <p style={{ color: '#111111', fontWeight: 600, margin: 0, fontSize: '0.9rem' }}>{nome}</p>
+                <p style={{ color: '#8a8a8a', fontSize: '0.75rem', margin: 0 }}>{email}</p>
             </div>
             <Avatar
-                
+                image={professorFoto}
                 shape="circle"
-                className="!w-10 !h-10 !bg-orange-500"
+                style={{ width: '50px', height: '50px', border: '3px solid rgba(255, 255, 255, 0.8)' }}
             />
             <button
                 className="bg-orange-500 hover:bg-orange-600 transition-all text-white px-6 py-2 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-orange-500/50"
@@ -92,21 +93,62 @@ function Navegacao(): JSX.Element {
     );
 
     return (
-        <header className="card h-[12vh] bg-black shadow-2xl flex items-center px-6 border-b-4 border-orange-500">
-            <div className="flex-1">
-                <Menubar
-                    model={items}
-                    start={start}
-                    className="!bg-black !border-0 !p-0"
-                    style={{
-                        backgroundColor: 'black',
-                        border: 'none',
-                        boxShadow: 'none'
-                    }}
-                />
-            </div>
-            {userActions}
-        </header>
+        <>
+            <style>
+                {`
+                    .p-menubar .p-menuitem-link {
+                        color: #000000 !important;
+                        font-weight: 600 !important;
+                        padding: 12px 16px !important;
+                        border-radius: 8px !important;
+                        margin: 0 4px !important;
+                        transition: all 0.3s ease !important;
+                        font-size: 1rem !important;
+                        text-decoration: none !important;
+                    }
+                    .p-menubar .p-menuitem-link:hover {
+                        color: #000000 !important;
+                        background-color: rgba(255, 255, 255, 0.15) !important;
+                        transform: translateY(-2px) !important;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+                    }
+                    .p-menubar .p-menuitem-icon {
+                        color: #000000 !important;
+                        margin-right: 8px !important;
+                        font-size: 1.1rem !important;
+                    }
+                    .p-menubar .p-menuitem-link:not(.router-link-active):hover .p-menuitem-icon {
+                        color: #000000 !important;
+                    }
+                    .p-menubar {
+                        padding: 8px 0 !important;
+                    }
+                `}
+            </style>
+            <header style={{
+                height: '12vh',
+                backgroundColor: '#ff7300',
+                backgroundImage: 'linear-gradient(90deg, #ff7300 0%, #ff8c00 100%)',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 24px',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.15)'
+            }}>
+                <div style={{ flex: 1 }}>
+                    <Menubar
+                        model={items}
+                        start={start}
+                        style={{
+                            backgroundColor: 'transparent',
+                            border: 'none',
+                            boxShadow: 'none'
+                        }}
+                    />
+                </div>
+                {userActions}
+            </header>
+        </>
     );
 }
 
