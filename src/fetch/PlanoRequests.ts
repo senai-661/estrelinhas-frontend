@@ -1,18 +1,18 @@
 /**
- * Classe para lidar com requisições de Matrícula
+ * Classe para lidar com requisições de Plano
  */
-class MatriculaRequests {
+class PlanoRequests {
 
     private serverUrl: string;
     private endpoint: string;
 
     constructor() {
         this.serverUrl = 'http://localhost:3333';
-        this.endpoint = '/api/matriculas';
+        this.endpoint = '/api/planos';
     }
 
     /**
-     * Lista todas as matrículas
+     * Lista todos os planos
      */
     async getAll() {
         try {
@@ -25,7 +25,7 @@ class MatriculaRequests {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao buscar matrículas');
+                throw new Error('Erro ao buscar planos');
             }
 
             return await response.json();
@@ -37,7 +37,7 @@ class MatriculaRequests {
     }
 
     /**
-     * Busca matrícula por ID
+     * Busca plano por ID
      */
     async getById(id: number) {
         try {
@@ -50,7 +50,7 @@ class MatriculaRequests {
             });
 
             if (!response.ok) {
-                throw new Error('Matrícula não encontrada');
+                throw new Error('Plano não encontrado');
             }
 
             return await response.json();
@@ -62,16 +62,14 @@ class MatriculaRequests {
     }
 
     /**
-     * Cria uma nova matrícula
+     * Cria um novo plano
      */
-    async create(matricula: {
-        id_aluno: number,
-        id_plano: number,
-        data_inicio: string,
-        data_fim: string,
-        status_matricula: string,
-        forma_pagamento: string,
-        valor_final: number
+    async create(plano: {
+        tipo_plano: string,
+        duracao_dias: number,
+        valor: number,
+        descricao?: string,
+        status_plano?: string
     }) {
         try {
             const response = await fetch(`${this.serverUrl}${this.endpoint}`, {
@@ -80,12 +78,12 @@ class MatriculaRequests {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify(matricula)
+                body: JSON.stringify(plano)
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao criar matrícula');
+                throw new Error(errorData.message || 'Erro ao criar plano');
             }
 
             return await response.json();
@@ -97,9 +95,9 @@ class MatriculaRequests {
     }
 
     /**
-     * Atualiza uma matrícula
+     * Atualiza um plano
      */
-    async update(id: number, matricula: any) {
+    async update(id: number, plano: any) {
         try {
             const response = await fetch(`${this.serverUrl}${this.endpoint}/${id}`, {
                 method: 'PUT',
@@ -107,12 +105,12 @@ class MatriculaRequests {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify(matricula)
+                body: JSON.stringify(plano)
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao atualizar matrícula');
+                throw new Error(errorData.message || 'Erro ao atualizar plano');
             }
 
             return await response.json();
@@ -124,7 +122,7 @@ class MatriculaRequests {
     }
 
     /**
-     * Remove uma matrícula
+     * Remove um plano
      */
     async delete(id: number) {
         try {
@@ -136,7 +134,7 @@ class MatriculaRequests {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao deletar matrícula');
+                throw new Error('Erro ao deletar plano');
             }
 
             return true;
@@ -147,9 +145,9 @@ class MatriculaRequests {
         }
     }
 
-    async obterListaDeMatriculas() {
+    async obterListaDePlanos() {
     return this.getAll();
 }
 }
 
-export default new MatriculaRequests();
+export default new PlanoRequests();
