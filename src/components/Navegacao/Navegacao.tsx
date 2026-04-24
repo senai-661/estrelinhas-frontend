@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthRequests from "../../fetch/AuthRequests";
 import logo from "../../assets/ChatGPT_Image_24_de_abr._de_2026__14_18_05-removebg-preview.png";
 import professorFoto from "../../assets/4364004.webp";
+import { useEffect } from 'react'
 
 interface CustomMenuItem extends MenuItem {
     badge?: number;
@@ -14,12 +15,27 @@ interface CustomMenuItem extends MenuItem {
 }
 
 function Navegacao(): JSX.Element {
-    const [isAuthenticated] = useState(() => {
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
         const isAuth = localStorage.getItem('isAuth');
         const token = localStorage.getItem('token');
         return !!(isAuth && token && AuthRequests.checkTokenExpiry());
     });
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const isAuth = localStorage.getItem('isAuth');
+            const token = localStorage.getItem('token');
+            const authenticated = !!(isAuth && token && AuthRequests.checkTokenExpiry());
+            setIsAuthenticated(authenticated);
+        };
+
+        checkAuth();
+
+        const interval = setInterval(checkAuth, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     const nome = localStorage.getItem('nome') || 'Usuário';
     const email = localStorage.getItem('email') || '';
@@ -29,26 +45,26 @@ function Navegacao(): JSX.Element {
             label: 'Home',
             icon: 'pi pi-home',
             className: 'm-5 text-lg',
-            url: "/"
+            command: () => navigate("/")
         },
         ...(isAuthenticated ? [
             {
                 label: 'Alunos',
                 icon: 'pi pi-users',
                 className: 'm-5 text-lg',
-                url: "/lista/alunos"
+                command: () => navigate("/lista/alunos")
+            },
+            {
+                label: 'Matrículas',
+                icon: 'pi pi-file',
+                className: 'm-5 text-lg',
+                command: () => navigate("/lista/matriculas")
             },
             {
                 label: 'Planos',
                 icon: 'pi pi-id-card',
                 className: 'm-5 text-lg',
-                url: "/lista/planos"
-            },
-            {
-                label: 'Matrículas',
-                icon: 'pi pi-file-edit',
-                className: 'm-5 text-lg',
-                url: "/lista/matriculas"
+                command: () => navigate("/lista/planos")
             }
         ] : [])
     ];

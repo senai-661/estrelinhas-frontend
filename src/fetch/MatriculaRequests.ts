@@ -1,6 +1,3 @@
-/**
- * Classe para lidar com requisições de Matrícula
- */
 class MatriculaRequests {
 
     private serverUrl: string;
@@ -11,16 +8,13 @@ class MatriculaRequests {
         this.endpoint = '/api/matriculas';
     }
 
-    /**
-     * Lista todas as matrículas
-     */
     async getAll() {
         try {
             const response = await fetch(`${this.serverUrl}${this.endpoint}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'x-access-token': `${localStorage.getItem('token')}`
                 }
             });
 
@@ -36,16 +30,13 @@ class MatriculaRequests {
         }
     }
 
-    /**
-     * Busca matrícula por ID
-     */
     async getById(id: number) {
         try {
             const response = await fetch(`${this.serverUrl}${this.endpoint}/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'x-access-token': `${localStorage.getItem('token')}`
                 }
             });
 
@@ -61,9 +52,6 @@ class MatriculaRequests {
         }
     }
 
-    /**
-     * Cria uma nova matrícula
-     */
     async create(matricula: {
         id_aluno: number,
         id_plano: number,
@@ -78,7 +66,7 @@ class MatriculaRequests {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'x-access-token': `${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify(matricula)
             });
@@ -96,16 +84,13 @@ class MatriculaRequests {
         }
     }
 
-    /**
-     * Atualiza uma matrícula
-     */
     async update(id: number, matricula: any) {
         try {
             const response = await fetch(`${this.serverUrl}${this.endpoint}/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'x-access-token': `${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify(matricula)
             });
@@ -123,15 +108,13 @@ class MatriculaRequests {
         }
     }
 
-    /**
-     * Remove uma matrícula
-     */
     async delete(id: number) {
         try {
             const response = await fetch(`${this.serverUrl}${this.endpoint}/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${localStorage.getItem('token')}`
                 }
             });
 
@@ -148,8 +131,8 @@ class MatriculaRequests {
     }
 
     async obterListaDeMatriculas() {
-    return this.getAll();
-}
+        return this.getAll();
+    }
 }
 
 export default new MatriculaRequests();
