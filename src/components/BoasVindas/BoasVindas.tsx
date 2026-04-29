@@ -1,16 +1,43 @@
 import { type JSX } from "react";
+import { useNavigate } from "react-router-dom";
 
 function BoasVindas(): JSX.Element {
-    return (
-        <main className="bg-gray-200  h-[76vh]">
-            <h1 className="text-[3rem] pt-20" style={{ textAlign: 'center' }}>GymPro</h1>
+    const navigate = useNavigate();
 
-            <p className="text-[1.2rem] mt-10" style={{ textAlign: 'center' }}>
-                A GymPro é uma academia focada no seu desempenho e bem-estar. 
-                Aqui você encontra treinos personalizados, acompanhamento profissional e uma estrutura pensada para te ajudar 
-                a alcançar seus objetivos de forma prática e eficiente.
-                Seja para ganhar massa, emagrecer ou melhorar sua saúde, a GymPro está com você em cada etapa.
-            </p>
+    return (
+        <main style={{
+            minHeight: '88vh',
+            backgroundColor: '#f5f5f5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '40px 20px'
+        }}>
+            <div>
+                <h1 style={{ fontSize: '3.5rem', fontWeight: 900, marginBottom: '16px', color: '#111' }}>
+                    TRANSFORME SEU <span style={{ color: '#f97316' }}>CORPO</span> E <span style={{ color: '#f97316' }}>MENTE</span>
+                </h1>
+                <p style={{ fontSize: '1rem', color: '#555', maxWidth: '500px', margin: '0 auto 32px', lineHeight: 1.7 }}>
+                    A melhor academia da cidade está esperando por você.
+                    Equipamentos de última geração, professores qualificados e um ambiente motivador.
+                </p>
+                <button
+                    onClick={() => navigate('/login')}
+                    style={{
+                        backgroundColor: '#f97316',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '14px 36px',
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                    }}
+                >
+                    Comece agora
+                </button>
+            </div>
         </main>
     );
 }

@@ -34,3 +34,4 @@ class AlunoRequests {
 }
 
 export default new AlunoRequests();
+
