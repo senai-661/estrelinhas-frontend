@@ -1,45 +1,225 @@
-import { type JSX } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState, type JSX } from "react";
+import { Menubar } from 'primereact/menubar';
+import type { MenuItem } from 'primereact/menuitem';
+import { Avatar } from 'primereact/avatar';
+import { useNavigate } from 'react-router-dom';
+import AuthRequests from "../../fetch/AuthRequests";
+import logo from "../../assets/gympro.png";
+import professorFoto from "../../assets/personal.webp";
 
-function BoasVindas(): JSX.Element {
+interface CustomMenuItem extends MenuItem {
+    badge?: number;
+    shortcut?: string;
+    items?: CustomMenuItem[];
+}
+
+function Navegacao(): JSX.Element {
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
+        const isAuth = localStorage.getItem('isAuth');
+        const token = localStorage.getItem('token');
+        return !!(isAuth && token && AuthRequests.checkTokenExpiry());
+    });
+    const [role, setRole] = useState(() => localStorage.getItem('role') || 'normal');
     const navigate = useNavigate();
 
-    return (
-        <main style={{
-            minHeight: '88vh',
-            backgroundColor: '#f5f5f5',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            padding: '40px 20px'
-        }}>
-            <div>
-                <h1 style={{ fontSize: '3.5rem', fontWeight: 900, marginBottom: '16px', color: '#111' }}>
-                    TRANSFORME SEU <span style={{ color: '#f97316' }}>CORPO</span> E <span style={{ color: '#f97316' }}>MENTE</span>
-                </h1>
-                <p style={{ fontSize: '1rem', color: '#555', maxWidth: '500px', margin: '0 auto 32px', lineHeight: 1.7 }}>
-                    A melhor academia da cidade está esperando por você.
-                    Equipamentos de última geração, professores qualificados e um ambiente motivador.
-                </p>
-                <button
-                    onClick={() => navigate('/login')}
-                    style={{
-                        backgroundColor: '#f97316',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        padding: '14px 36px',
-                        fontSize: '1rem',
-                        fontWeight: 600,
-                        cursor: 'pointer'
-                    }}
-                >
-                    Comece agora
-                </button>
+    useEffect(() => {
+        const checkAuth = () => {
+            const isAuth = localStorage.getItem('isAuth');
+            const token = localStorage.getItem('token');
+            const authenticated = !!(isAuth && token && AuthRequests.checkTokenExpiry());
+            setIsAuthenticated(authenticated);
+            setRole(localStorage.getItem('role') || 'normal');
+        };
+        checkAuth();
+        const interval = setInterval(checkAuth, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const nome = localStorage.getItem('nome') || 'Usuário';
+    const email = localStorage.getItem('email') || '';
+
+    const fotoPerfil = role === 'admin' ? professorFoto : null;
+
+    const menuProfessor: CustomMenuItem[] = [
+        {
+            label: 'Home',
+            icon: 'pi pi-home',
+            className: 'm-5 text-lg',
+            command: () => navigate("/")
+        },
+        {
+            label: 'Alunos',
+            icon: 'pi pi-users',
+            className: 'm-5 text-lg',
+            command: () => navigate("/lista/alunos")
+        },
+        {
+            label: 'Matrículas',
+            icon: 'pi pi-file',
+            className: 'm-5 text-lg',
+            command: () => navigate("/lista/matriculas")
+        },
+        {
+            label: 'Planos',
+            icon: 'pi pi-id-card',
+            className: 'm-5 text-lg',
+            command: () => navigate("/lista/planos")
+        }
+    ];
+
+    const menuAluno: CustomMenuItem[] = [
+        {
+            label: 'Home',
+            icon: 'pi pi-home',
+            className: 'm-5 text-lg',
+            command: () => navigate("/")
+        },
+        {
+            label: 'Meu Treino',
+            icon: 'pi pi-bolt',
+            className: 'm-5 text-lg',
+            command: () => navigate("/aluno/treino")
+        },
+        {
+            label: 'Pagamentos',
+            icon: 'pi pi-wallet',
+            className: 'm-5 text-lg',
+            command: () => navigate("/aluno/pagamentos")
+        },
+        {
+            label: 'Unidades',
+            icon: 'pi pi-map-marker',
+            className: 'm-5 text-lg',
+            command: () => navigate("/aluno/unidades")
+        }
+    ];
+
+    const items: CustomMenuItem[] = [
+        {
+            label: 'Home',
+            icon: 'pi pi-home',
+            className: 'm-5 text-lg',
+            command: () => navigate("/")
+        },
+        ...(isAuthenticated
+            ? (role === 'admin' ? menuProfessor.slice(1) : menuAluno.slice(1))
+            : [])
+    ];
+
+    const start = (
+        <img
+            alt="logo"
+            src={logo}
+            style={{ width: '140px', maxWidth: '140px', marginLeft: '10px' }}
+        />
+    );
+
+    const userActions = isAuthenticated ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '24px', marginRight: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', paddingRight: '24px', borderRight: '1px solid rgba(255, 115, 0, 0.35)' }}>
+                <p style={{ color: '#111111', fontWeight: 600, margin: 0, fontSize: '0.9rem' }}>{nome}</p>
+                <p style={{ color: '#8a8a8a', fontSize: '0.75rem', margin: 0 }}>{email}</p>
             </div>
-        </main>
+
+            {fotoPerfil ? (
+                <Avatar
+                    image={fotoPerfil}
+                    shape="circle"
+                    style={{ width: '50px', height: '50px', border: '3px solid rgba(255, 255, 255, 0.8)' }}
+                />
+            ) : (
+                <Avatar
+                    label={nome.charAt(0).toUpperCase()}
+                    shape="circle"
+                    style={{
+                        width: '50px', height: '50px',
+                        border: '3px solid rgba(255, 255, 255, 0.8)',
+                        backgroundColor: '#fff',
+                        color: '#f97316',
+                        fontWeight: 700,
+                        fontSize: '1.2rem'
+                    }}
+                />
+            )}
+
+            <button
+                className="bg-orange-500 hover:bg-orange-600 transition-all text-white px-6 py-2 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-orange-500/50"
+                onClick={AuthRequests.removeToken}
+                style={{ height: '40px', fontSize: '14px' }}
+            >
+                <i className="pi pi-sign-out"></i>
+                <span>Sair</span>
+            </button>
+        </div>
+    ) : (
+        <button
+            className="bg-orange-500 hover:bg-orange-600 transition-all font-bold text-white px-8 py-2 mr-6 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 shadow-lg hover:shadow-orange-500/50"
+            onClick={() => navigate('/login')}
+            style={{ height: '40px', fontSize: '14px' }}
+        >
+            <i className="pi pi-sign-in"></i>
+            <span>Login</span>
+        </button>
+    );
+
+    return (
+        <>
+            <style>
+                {`
+                    .p-menubar .p-menuitem-link {
+                        color: #000000 !important;
+                        font-weight: 600 !important;
+                        padding: 12px 16px !important;
+                        border-radius: 8px !important;
+                        margin: 0 4px !important;
+                        transition: all 0.3s ease !important;
+                        font-size: 1rem !important;
+                        text-decoration: none !important;
+                    }
+                    .p-menubar .p-menuitem-link:hover {
+                        color: #000000 !important;
+                        background-color: rgba(255, 255, 255, 0.15) !important;
+                        transform: translateY(-2px) !important;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+                    }
+                    .p-menubar .p-menuitem-icon {
+                        color: #000000 !important;
+                        margin-right: 8px !important;
+                        font-size: 1.1rem !important;
+                    }
+                    .p-menubar .p-menuitem-link:not(.router-link-active):hover .p-menuitem-icon {
+                        color: #000000 !important;
+                    }
+                    .p-menubar {
+                        padding: 8px 0 !important;
+                    }
+                `}
+            </style>
+            <header style={{
+                height: '12vh',
+                backgroundColor: '#ff7300',
+                backgroundImage: 'linear-gradient(90deg, #ff7300 0%, #ff8c00 100%)',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 24px',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.15)'
+            }}>
+                <div style={{ flex: 1 }}>
+                    <Menubar
+                        model={items}
+                        start={start}
+                        style={{
+                            backgroundColor: 'transparent',
+                            border: 'none',
+                            boxShadow: 'none'
+                        }}
+                    />
+                </div>
+                {userActions}
+            </header>
+        </>
     );
 }
 
-export default BoasVindas;
+export default Navegacao;
