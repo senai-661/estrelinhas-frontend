@@ -1,5 +1,4 @@
-import AlunoDTO from "../dto/AlunoDTO";
-
+// Classe responsável por fazer requisições à API - aluno
 class AlunoRequests {
     private serverURL;
     private endpointAluno;
@@ -9,7 +8,7 @@ class AlunoRequests {
         this.endpointAluno = `/api/alunos`;
     }
 
-    async obterListaDeAlunos(): Promise<AlunoDTO[] | undefined> {
+    async obterListaDeAlunos() {
         try {
             const token = localStorage.getItem('token');
 
@@ -20,8 +19,8 @@ class AlunoRequests {
                 }
             });
 
-            if (respostaAPI.ok) {
-                const listaDeAlunos: AlunoDTO[] = await respostaAPI.json();
+            if(respostaAPI.ok) {
+                const listaDeAlunos = await respostaAPI.json();
                 return listaDeAlunos;
             } else {
                 throw new Error("Não foi possível listar os alunos.");
@@ -33,5 +32,4 @@ class AlunoRequests {
     }
 }
 
-export default new AlunoRequests();
-
+export default new AlunoRequests;
