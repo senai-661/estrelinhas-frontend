@@ -5,85 +5,114 @@ import type AlunoDTO from "../../../dto/AlunoDTO";
 
 function ListagemAlunos(): JSX.Element {
     const [alunos, setAlunos] = useState<AlunoDTO[]>([]);
+    const [busca, setBusca] = useState('');
+    const [pagina, setPagina] = useState(1);
+    const itensPorPagina = 6;
 
     useEffect(() => {
         const buscarAlunos = async () => {
             try {
                 const listaDeAlunos = await AlunoRequests.obterListaDeAlunos();
-                if (listaDeAlunos) {
-                    setAlunos(listaDeAlunos);
-                }
+                setAlunos(listaDeAlunos);
             } catch (error) {
                 console.error(`Erro ao buscar alunos. ${error}`);
-                alert("Erro ao carregar alunos.");
+                alert("Erro ao criar a listagem de alunos.");
             }
         }
-
         buscarAlunos();
     }, []);
 
-    return (
-        <main className="bg-gray-200 h-[76vh]">
-            
-            <div className="w-8/10 flex m-auto p-12 items-center">
-                <h1 className="w-9/10 text-3xl text-center text-orange-600 font-bold">
-                    Alunos - GymPro
-                </h1>
+    const alunosFiltrados = alunos.filter(a =>
+        `${a.nome} ${a.sobrenome}`.toLowerCase().includes(busca.toLowerCase())
+    );
 
-                <a 
-                    href="#" 
-                    className="w-1/10 p-3 text-md bg-orange-500 rounded-md text-center text-white font-bold flex items-center justify-center hover:bg-orange-600"
-                >
-                    Novo Aluno
-                </a>
+    const totalPaginas = Math.ceil(alunosFiltrados.length / itensPorPagina);
+    const alunosPagina = alunosFiltrados.slice((pagina - 1) * itensPorPagina, pagina * itensPorPagina);
+
+    const tdStyle = { padding: '14px 16px', borderBottom: '1px solid #f0f0f0', fontSize: '0.9rem', color: '#333' };
+    const thStyle = { padding: '12px 16px', textAlign: 'left' as const, fontSize: '0.78rem', color: '#888', fontWeight: 600, textTransform: 'uppercase' as const, backgroundColor: '#fafafa' };
+
+    return (
+        <main style={{ minHeight: '88vh', backgroundColor: '#fff', padding: '40px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <h1 style={{ fontSize: '1.6rem', fontWeight: 700, margin: 0 }}>Lista de Alunos</h1>
+                <button style={{
+                    backgroundColor: '#f97316', color: 'white', border: 'none',
+                    borderRadius: '8px', padding: '10px 20px', fontWeight: 600, cursor: 'pointer'
+                }}>
+                    + Novo Aluno
+                </button>
             </div>
 
-            <div className="w-8/10 max-w-[80%] max-h-7/10 overflow-auto m-auto border border-orange-400 rounded-md">
-                
-                <table className="table-auto w-full border-collapse text-sm">
-                    
-                    <thead className="bg-orange-500 sticky top-0 z-10">
+            <input
+                type="text"
+                placeholder="Buscar aluno..."
+                value={busca}
+                onChange={e => { setBusca(e.target.value); setPagina(1); }}
+                style={{
+                    width: '100%', padding: '10px 14px', borderRadius: '8px',
+                    border: '1px solid #e0e0e0', marginBottom: '20px',
+                    fontSize: '0.9rem', boxSizing: 'border-box'
+                }}
+            />
+
+            <div style={{ border: '1px solid #f0f0f0', borderRadius: '12px', overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
                         <tr>
-                            <th className="text-white">ID</th>
-                            <th className="text-white p-4">Nome</th>
-                            <th className="text-white">E-mail</th>
-                            <th className="text-white">Telefone</th>
-                            <th className="text-white">Status</th>
-                            <th className="text-white">Ações</th>
+                            <th style={thStyle}>Nome</th>
+                            <th style={thStyle}>CPF</th>
+                            <th style={thStyle}>Telefone</th>
+                            <th style={thStyle}>Status</th>
+                            <th style={{ ...thStyle, textAlign: 'center' }}>Ações</th>
                         </tr>
                     </thead>
-
                     <tbody>
-                        {alunos.map((aluno) => (
-                            <tr 
-                                key={aluno.id_aluno}
-                                className="border-b text-center odd:bg-orange-50 even:bg-white hover:bg-orange-200 hover:cursor-pointer"
-                            >
-                                <td>{aluno.id_aluno}</td>
-                                <td>{aluno.nome} {aluno.sobrenome}</td>
-                                <td>{aluno.email}</td>
-                                <td>{aluno.celular}</td>
-                                <td>
-                                    {aluno.status_aluno ? "Ativo" : "Inativo"}
+                        {alunosPagina.map(aluno => (
+                            <tr key={aluno.id_aluno} style={{ transition: 'background 0.2s' }}
+                                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff8f5')}
+                                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}>
+                                <td style={{ ...tdStyle, fontWeight: 600 }}>{aluno.nome} {aluno.sobrenome}</td>
+                                <td style={tdStyle}>{aluno.cpf}</td>
+                                <td style={tdStyle}>{aluno.celular}</td>
+                                <td style={tdStyle}>
+                                    <span style={{
+                                        backgroundColor: aluno.status_aluno === 'Ativo' ? '#dcfce7' : '#fef9c3',
+                                        color: aluno.status_aluno === 'Ativo' ? '#16a34a' : '#a16207',
+                                        padding: '3px 12px', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 600
+                                    }}>
+                                        {aluno.status_aluno ?? 'Ativo'}
+                                    </span>
                                 </td>
-                                <td>
-                                    <a href="#" className="inline-block bg-blue-500 p-2 m-2 rounded-md text-white">
-                                        Detalhes
-                                    </a>
-                                    <a href="#" className="inline-block bg-green-500 p-2 m-2 rounded-md text-white">
-                                        Atualizar
-                                    </a>
-                                    <a href="#" className="inline-block bg-red-500 p-2 m-2 rounded-md text-white">
-                                        Deletar
-                                    </a>
+                                <td style={{ ...tdStyle, textAlign: 'center' }}>
+                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bfdbfe', backgroundColor: '#eff6ff', color: '#3b82f6', fontSize: '0.8rem', cursor: 'pointer' }}>Detalhes</button>
+                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bbf7d0', backgroundColor: '#f0fdf4', color: '#16a34a', fontSize: '0.8rem', cursor: 'pointer' }}>Editar</button>
+                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #fecaca', backgroundColor: '#fff1f2', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer' }}>Deletar</button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
-
                 </table>
             </div>
 
+            {/* Paginação */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', marginTop: '20px' }}>
+                <button onClick={() => setPagina(p => Math.max(1, p - 1))} disabled={pagina === 1}
+                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #e0e0e0', background: '#fff', cursor: 'pointer' }}>{'<'}</button>
+                {Array.from({ length: totalPaginas }, (_, i) => (
+                    <button key={i + 1} onClick={() => setPagina(i + 1)}
+                        style={{
+                            padding: '6px 12px', borderRadius: '6px', border: '1px solid #e0e0e0',
+                            background: pagina === i + 1 ? '#f97316' : '#fff',
+                            color: pagina === i + 1 ? '#fff' : '#333',
+                            cursor: 'pointer', fontWeight: pagina === i + 1 ? 700 : 400
+                        }}>{i + 1}</button>
+                ))}
+                <button onClick={() => setPagina(p => Math.min(totalPaginas, p + 1))} disabled={pagina === totalPaginas}
+                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #e0e0e0', background: '#fff', cursor: 'pointer' }}>{'>'}</button>
+            </div>
         </main>
     );
 }
