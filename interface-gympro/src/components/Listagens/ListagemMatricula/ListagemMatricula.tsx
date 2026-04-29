@@ -1,33 +1,31 @@
-import { type JSX } from "react";
-import { useState, useEffect } from "react";
-import AlunoRequests from "../../../fetch/AlunoRequests";
-import type AlunoDTO from "../../../dto/AlunoDTO";
+import { type JSX, useEffect, useState } from "react";
+import MatriculaRequests from "../../../fetch/MatriculaRequests";
+import AuthRequests from "../../../fetch/AuthRequests";
 
-function ListagemAlunos(): JSX.Element {
-    const [alunos, setAlunos] = useState<AlunoDTO[]>([]);
-    const [busca, setBusca] = useState('');
+function ListagemMatriculas(): JSX.Element {
+    const [matriculas, setMatriculas] = useState<any[]>([]);
     const [pagina, setPagina] = useState(1);
     const itensPorPagina = 6;
 
     useEffect(() => {
-        const buscarAlunos = async () => {
+        const buscarMatriculas = async () => {
             try {
-                const listaDeAlunos = await AlunoRequests.obterListaDeAlunos();
-                setAlunos(listaDeAlunos);
+                const token = localStorage.getItem('token');
+                const isAuth = localStorage.getItem('isAuth');
+                if (!token || !isAuth || !AuthRequests.checkTokenExpiry()) return;
+                const lista = await MatriculaRequests.obterListaDeMatriculas();
+                setMatriculas(Array.isArray(lista) ? lista : []);
             } catch (error) {
-                console.error(`Erro ao buscar alunos. ${error}`);
-                alert("Erro ao criar a listagem de alunos.");
+                console.error(`Erro ao buscar matrículas:`, error);
+                alert(`Erro ao carregar matrículas: ${error}`);
+                setMatriculas([]);
             }
-        }
-        buscarAlunos();
+        };
+        buscarMatriculas();
     }, []);
 
-    const alunosFiltrados = alunos.filter(a =>
-        `${a.nome} ${a.sobrenome}`.toLowerCase().includes(busca.toLowerCase())
-    );
-
-    const totalPaginas = Math.ceil(alunosFiltrados.length / itensPorPagina);
-    const alunosPagina = alunosFiltrados.slice((pagina - 1) * itensPorPagina, pagina * itensPorPagina);
+    const totalPaginas = Math.ceil(matriculas.length / itensPorPagina);
+    const matriculasPagina = matriculas.slice((pagina - 1) * itensPorPagina, pagina * itensPorPagina);
 
     const tdStyle = { padding: '14px 16px', borderBottom: '1px solid #f0f0f0', fontSize: '0.9rem', color: '#333' };
     const thStyle = { padding: '12px 16px', textAlign: 'left' as const, fontSize: '0.78rem', color: '#888', fontWeight: 600, textTransform: 'uppercase' as const, backgroundColor: '#fafafa' };
@@ -35,69 +33,68 @@ function ListagemAlunos(): JSX.Element {
     return (
         <main style={{ minHeight: '88vh', backgroundColor: '#fff', padding: '40px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '1.6rem', fontWeight: 700, margin: 0 }}>Lista de Alunos</h1>
+                <h1 style={{ fontSize: '1.6rem', fontWeight: 700, margin: 0 }}>Matrículas</h1>
                 <button style={{
                     backgroundColor: '#f97316', color: 'white', border: 'none',
                     borderRadius: '8px', padding: '10px 20px', fontWeight: 600, cursor: 'pointer'
                 }}>
-                    + Novo Aluno
+                    + Nova Matrícula
                 </button>
             </div>
-
-            <input
-                type="text"
-                placeholder="Buscar aluno..."
-                value={busca}
-                onChange={e => { setBusca(e.target.value); setPagina(1); }}
-                style={{
-                    width: '100%', padding: '10px 14px', borderRadius: '8px',
-                    border: '1px solid #e0e0e0', marginBottom: '20px',
-                    fontSize: '0.9rem', boxSizing: 'border-box'
-                }}
-            />
 
             <div style={{ border: '1px solid #f0f0f0', borderRadius: '12px', overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr>
-                            <th style={thStyle}>Nome</th>
-                            <th style={thStyle}>CPF</th>
-                            <th style={thStyle}>Telefone</th>
+                            <th style={thStyle}>ID</th>
+                            <th style={thStyle}>Vigência</th>
+                            <th style={thStyle}>Valor Pago</th>
+                            <th style={thStyle}>Forma Pgto.</th>
                             <th style={thStyle}>Status</th>
                             <th style={{ ...thStyle, textAlign: 'center' }}>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {alunosPagina.map(aluno => (
-                            <tr key={aluno.id_aluno} style={{ transition: 'background 0.2s' }}
+                        {matriculasPagina.length > 0 ? matriculasPagina.map((matricula, index) => (
+                            <tr key={matricula.idMatricula ?? index}
                                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff8f5')}
                                 onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}>
-                                <td style={{ ...tdStyle, fontWeight: 600 }}>{aluno.nome} {aluno.sobrenome}</td>
-                                <td style={tdStyle}>{aluno.cpf}</td>
-                                <td style={tdStyle}>{aluno.celular}</td>
+                                <td style={tdStyle}>{matricula.idMatricula}</td>
+                                <td style={tdStyle}>
+                                    {new Date(matricula.dataMatricula).toLocaleDateString('pt-BR')} → {new Date(matricula.dataVencimento).toLocaleDateString('pt-BR')}
+                                </td>
+                                <td style={{ ...tdStyle, fontWeight: 700 }}>
+                                    R$ {Number(matricula.valorPago).toFixed(2)}
+                                </td>
+                                <td style={tdStyle}>{matricula.formaPagamento}</td>
                                 <td style={tdStyle}>
                                     <span style={{
-                                        backgroundColor: aluno.status_aluno === 'Ativo' ? '#dcfce7' : '#fef9c3',
-                                        color: aluno.status_aluno === 'Ativo' ? '#16a34a' : '#a16207',
+                                        backgroundColor: matricula.statusMatricula === 'ATIVA' ? '#dcfce7' : '#e5e7eb',
+                                        color: matricula.statusMatricula === 'ATIVA' ? '#16a34a' : '#374151',
                                         padding: '3px 12px', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 600
                                     }}>
-                                        {aluno.status_aluno ?? 'Ativo'}
+                                        {matricula.statusMatricula}
                                     </span>
                                 </td>
                                 <td style={{ ...tdStyle, textAlign: 'center' }}>
                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                         <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bfdbfe', backgroundColor: '#eff6ff', color: '#3b82f6', fontSize: '0.8rem', cursor: 'pointer' }}>Detalhes</button>
-                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bbf7d0', backgroundColor: '#f0fdf4', color: '#16a34a', fontSize: '0.8rem', cursor: 'pointer' }}>Editar</button>
+                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bbf7d0', backgroundColor: '#f0fdf4', color: '#16a34a', fontSize: '0.8rem', cursor: 'pointer' }}>Atualizar</button>
                                         <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #fecaca', backgroundColor: '#fff1f2', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer' }}>Deletar</button>
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        )) : (
+                            <tr>
+                                <td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+                                    Nenhuma matrícula encontrada
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
 
-            {/* Paginação */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', marginTop: '20px' }}>
                 <button onClick={() => setPagina(p => Math.max(1, p - 1))} disabled={pagina === 1}
                     style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #e0e0e0', background: '#fff', cursor: 'pointer' }}>{'<'}</button>
@@ -117,4 +114,4 @@ function ListagemAlunos(): JSX.Element {
     );
 }
 
-export default ListagemAlunos;
+export default ListagemMatriculas;
