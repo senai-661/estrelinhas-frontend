@@ -1,12 +1,11 @@
-import { useState, type JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 import { Menubar } from 'primereact/menubar';
 import type { MenuItem } from 'primereact/menuitem';
 import { Avatar } from 'primereact/avatar';
 import { useNavigate } from 'react-router-dom';
 import AuthRequests from "../../fetch/AuthRequests";
-import logo from "../../assets/ChatGPT_Image_24_de_abr._de_2026__14_18_05-removebg-preview.png";
-import professorFoto from "../../assets/4364004.webp";
-import { useEffect } from 'react'
+import logo from "../../assets/gympro.png";
+import professorFoto from "../../assets/personal.webp";
 
 interface CustomMenuItem extends MenuItem {
     badge?: number;
@@ -20,6 +19,7 @@ function Navegacao(): JSX.Element {
         const token = localStorage.getItem('token');
         return !!(isAuth && token && AuthRequests.checkTokenExpiry());
     });
+    const [role, setRole] = useState(() => localStorage.getItem('role') || 'normal');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,18 +28,72 @@ function Navegacao(): JSX.Element {
             const token = localStorage.getItem('token');
             const authenticated = !!(isAuth && token && AuthRequests.checkTokenExpiry());
             setIsAuthenticated(authenticated);
+            setRole(localStorage.getItem('role') || 'normal');
         };
-
         checkAuth();
-
         const interval = setInterval(checkAuth, 1000);
-
         return () => clearInterval(interval);
     }, []);
 
     const nome = localStorage.getItem('nome') || 'Usuário';
     const email = localStorage.getItem('email') || '';
-   
+
+    const fotoPerfil = role === 'admin' ? professorFoto : null;
+
+    const menuProfessor: CustomMenuItem[] = [
+        {
+            label: 'Home',
+            icon: 'pi pi-home',
+            className: 'm-5 text-lg',
+            command: () => navigate("/")
+        },
+        {
+            label: 'Alunos',
+            icon: 'pi pi-users',
+            className: 'm-5 text-lg',
+            command: () => navigate("/lista/alunos")
+        },
+        {
+            label: 'Matrículas',
+            icon: 'pi pi-file',
+            className: 'm-5 text-lg',
+            command: () => navigate("/lista/matriculas")
+        },
+        {
+            label: 'Planos',
+            icon: 'pi pi-id-card',
+            className: 'm-5 text-lg',
+            command: () => navigate("/lista/planos")
+        }
+    ];
+
+    const menuAluno: CustomMenuItem[] = [
+        {
+            label: 'Home',
+            icon: 'pi pi-home',
+            className: 'm-5 text-lg',
+            command: () => navigate("/")
+        },
+        {
+            label: 'Meu Treino',
+            icon: 'pi pi-bolt',
+            className: 'm-5 text-lg',
+            command: () => navigate("/aluno/treino")
+        },
+        {
+            label: 'Pagamentos',
+            icon: 'pi pi-wallet',
+            className: 'm-5 text-lg',
+            command: () => navigate("/aluno/pagamentos")
+        },
+        {
+            label: 'Unidades',
+            icon: 'pi pi-map-marker',
+            className: 'm-5 text-lg',
+            command: () => navigate("/aluno/unidades")
+        }
+    ];
+
     const items: CustomMenuItem[] = [
         {
             label: 'Home',
@@ -47,26 +101,9 @@ function Navegacao(): JSX.Element {
             className: 'm-5 text-lg',
             command: () => navigate("/")
         },
-        ...(isAuthenticated ? [
-            {
-                label: 'Alunos',
-                icon: 'pi pi-users',
-                className: 'm-5 text-lg',
-                command: () => navigate("/lista/alunos")
-            },
-            {
-                label: 'Matrículas',
-                icon: 'pi pi-file',
-                className: 'm-5 text-lg',
-                command: () => navigate("/lista/matriculas")
-            },
-            {
-                label: 'Planos',
-                icon: 'pi pi-id-card',
-                className: 'm-5 text-lg',
-                command: () => navigate("/lista/planos")
-            }
-        ] : [])
+        ...(isAuthenticated
+            ? (role === 'admin' ? menuProfessor.slice(1) : menuAluno.slice(1))
+            : [])
     ];
 
     const start = (
@@ -83,11 +120,28 @@ function Navegacao(): JSX.Element {
                 <p style={{ color: '#111111', fontWeight: 600, margin: 0, fontSize: '0.9rem' }}>{nome}</p>
                 <p style={{ color: '#8a8a8a', fontSize: '0.75rem', margin: 0 }}>{email}</p>
             </div>
-            <Avatar
-                image={professorFoto}
-                shape="circle"
-                style={{ width: '50px', height: '50px', border: '3px solid rgba(255, 255, 255, 0.8)' }}
-            />
+
+            {fotoPerfil ? (
+                <Avatar
+                    image={fotoPerfil}
+                    shape="circle"
+                    style={{ width: '50px', height: '50px', border: '3px solid rgba(255, 255, 255, 0.8)' }}
+                />
+            ) : (
+                <Avatar
+                    label={nome.charAt(0).toUpperCase()}
+                    shape="circle"
+                    style={{
+                        width: '50px', height: '50px',
+                        border: '3px solid rgba(255, 255, 255, 0.8)',
+                        backgroundColor: '#fff',
+                        color: '#f97316',
+                        fontWeight: 700,
+                        fontSize: '1.2rem'
+                    }}
+                />
+            )}
+
             <button
                 className="bg-orange-500 hover:bg-orange-600 transition-all text-white px-6 py-2 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-orange-500/50"
                 onClick={AuthRequests.removeToken}
