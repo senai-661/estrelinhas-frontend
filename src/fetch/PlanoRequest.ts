@@ -1,35 +1,135 @@
-import PlanoDTO from "../dto/PlanoDTO";
-
 class PlanoRequests {
-    private serverURL;
-    private endpointPlano;
+
+    private serverUrl: string;
+    private endpoint: string;
 
     constructor() {
-        this.serverURL = `http://localhost:3333`;
-        this.endpointPlano = `/api/planos`;
+        this.serverUrl = 'http://localhost:3333';
+        this.endpoint = '/api/planos';
     }
 
-    async obterListaDePlanos(): Promise<PlanoDTO[] | undefined> {
+    async getAll() {
         try {
-            const token = localStorage.getItem('token');
-
-            const respostaAPI = await fetch(`${this.serverURL}${this.endpointPlano}`, {
+            const response = await fetch(`${this.serverUrl}${this.endpoint}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-access-token': `${token}`
+                    'x-access-token': `${localStorage.getItem('token')}`
                 }
             });
 
-            if (respostaAPI.ok) {
-                const listaDePlanos: PlanoDTO[] = await respostaAPI.json();
-                return listaDePlanos;
-            } else {
-                throw new Error("Não foi possível listar os planos.");
+            if (!response.ok) {
+                throw new Error('Erro ao buscar planos');
             }
+
+            return await response.json();
+
         } catch (error) {
-            console.error(`Erro ao buscar planos. ${error}`);
-            return;
+            console.error('Erro:', error);
+            throw error;
         }
+    }
+
+    async getById(id: number) {
+        try {
+            const response = await fetch(`${this.serverUrl}${this.endpoint}/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Plano não encontrado');
+            }
+
+            return await response.json();
+
+        } catch (error) {
+            console.error('Erro:', error);
+            throw error;
+        }
+    }
+
+    async create(plano: {
+        tipo_plano: string,
+        duracao_dias: number,
+        valor: number,
+        descricao?: string,
+        status_plano?: string
+    }) {
+        try {
+            const response = await fetch(`${this.serverUrl}${this.endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(plano)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Erro ao criar plano');
+            }
+
+            return await response.json();
+
+        } catch (error) {
+            console.error('Erro:', error);
+            throw error;
+        }
+    }
+
+    async update(id: number, plano: any) {
+        try {
+            const response = await fetch(`${this.serverUrl}${this.endpoint}/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(plano)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Erro ao atualizar plano');
+            }
+
+            return await response.json();
+
+        } catch (error) {
+            console.error('Erro:', error);
+            throw error;
+        }
+    }
+
+    async delete(id: number) {
+        try {
+            const response = await fetch(`${this.serverUrl}${this.endpoint}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao deletar plano');
+            }
+
+            return true;
+
+        } catch (error) {
+            console.error('Erro:', error);
+            throw error;
+        }
+    }
+
+    async obterListaDePlanos() {
+        return this.getAll();
     }
 }
 
