@@ -1,5 +1,4 @@
 export interface PlanoDTO {
-
     cod_plano: string;      
     tipo_plano: string;     
     duracao_dias: number;  

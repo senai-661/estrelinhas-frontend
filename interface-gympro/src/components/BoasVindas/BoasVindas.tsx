@@ -2,15 +2,22 @@ import { type JSX } from "react";
 
 function BoasVindas(): JSX.Element {
     return (
-        <main className="bg-gray-200  h-[76vh]">
-            <h1 className="text-[3rem] pt-20" style={{ textAlign: 'center' }}>GymPro</h1>
+        <main style={{ backgroundColor: '#F0F2F5', minHeight: 'calc(100vh - 64px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '4rem 2rem', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '3.5rem', fontWeight: '800', lineHeight: '1.1', color: '#111', margin: '0 0 1.5rem' }}>
+                TRANSFORME SEU{' '}
+                <span style={{ color: '#F97316' }}>CORPO</span>
+                {' '}E{' '}
+                <span style={{ color: '#F97316' }}>MENTE</span>
+            </h1>
 
-            <p className="text-[1.2rem] mt-10" style={{ textAlign: 'center' }}>
-                A GymPro é uma academia focada no seu desempenho e bem-estar. 
-                Aqui você encontra treinos personalizados, acompanhamento profissional e uma estrutura pensada para te ajudar 
-                a alcançar seus objetivos de forma prática e eficiente.
-                 Seja para ganhar massa, emagrecer ou melhorar sua saúde, a GymPro está com você em cada etapa.
+            <p style={{ fontSize: '1.1rem', color: '#444', maxWidth: '600px', lineHeight: '1.7', margin: '0 0 2.5rem' }}>
+                A melhor academia da cidade está esperando por você. Equipamentos de última geração,
+                professores qualificados e um ambiente motivador.
             </p>
+
+            <button style={{ backgroundColor: '#F97316', color: 'white', border: 'none', borderRadius: '8px', padding: '14px 36px', fontSize: '1rem', fontWeight: '700', cursor: 'pointer' }}>
+                Comece agora
+            </button>
         </main>
     );
 }
