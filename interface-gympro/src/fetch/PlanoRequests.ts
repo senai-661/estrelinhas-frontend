@@ -1,4 +1,3 @@
-// Classe responsável por fazer requisições à API - plano
 class PlanoRequests {
     private serverURL;
     private endpointPlano;
@@ -20,14 +19,23 @@ class PlanoRequests {
             });
 
             if (respostaAPI.ok) {
-                const listaDePlanos = await respostaAPI.json();
-                return listaDePlanos;
+                const dados = await respostaAPI.json();
+
+    
+                return dados.map((item: any) => ({
+                    cod_plano: item.codPlano,
+                    tipo_plano: item.tipoPlano,
+                    duracao_dias: item.duracaoDias,
+                    valor: Number(item.valor),
+                    descricao: item.descricao,
+                    status_plano: item.statusPlano
+                }));
             } else {
                 throw new Error("Não foi possível listar os planos.");
             }
         } catch (error) {
             console.error(`Erro ao fazer a consulta de planos. ${error}`);
-            return;
+            return [];
         }
     }
 }

@@ -1,74 +1,221 @@
 import { type JSX } from "react";
 import { useState, useEffect } from "react";
-import AlunoRequests from "../../fetch/AlunoRequests";
-import type { AlunoDTO } from "../../dto/AlunoDTO";
+import AlunoRequest from '../../../fetch/AlunoRequests'
+import type { AlunoDTO } from '../../../dto/AlunoDTO'
+
+const ALUNOS_POR_PAGINA = 6;
 
 function ListagemAlunos(): JSX.Element {
     const [alunos, setAlunos] = useState<AlunoDTO[]>([]);
+    const [busca, setBusca] = useState("");
+    const [paginaAtual, setPaginaAtual] = useState(1);
 
     useEffect(() => {
         const buscarAlunos = async () => {
             try {
-                const listaDeAlunos = await AlunoRequests.obterListaDeAlunos();
+                const listaDeAlunos = await AlunoRequest.obterListaDeAlunos();
                 setAlunos(listaDeAlunos);
             } catch (error) {
                 console.error(`Erro ao buscar alunos. ${error}`);
                 alert("Erro ao criar a listagem de alunos.");
             }
         }
-
         buscarAlunos();
     }, []);
 
-    return (
-        <main className="bg-gray-200 h-[76vh]">
-            <div className="w-8/10 flex m-auto p-12">
-                <h1 className="w-9/10 text-3xl text-center">Alunos</h1>
-                <a href="#" className="w-1/10 p-3 text-md bg-slate-700 rounded-md text-center text-white font-bold flex items-center justify-center hover:cursor-pointer">
-                    Novo Aluno
-                </a>
-            </div>
+    const alunosFiltrados = alunos.filter((aluno) => {
+        const nomeCompleto = `${aluno.nome} ${aluno.sobrenome}`.toLowerCase();
+        return nomeCompleto.includes(busca.toLowerCase());
+    });
 
-            <div className="w-8/10 max-w-[80%] max-h-7/10 overflow-auto overscroll-none m-auto border border-slate-800">
-                <table className="table-auto w-full border-collapse text-sm">
-                    <thead className="bg-slate-700 sticky top-0 z-10">
-                        <tr>
-                            <th className="border border-slate-600 text-white p-4">Nome</th>
-                            <th className="border border-slate-600 text-white p-4">CPF</th>
-                            <th className="border border-slate-600 text-white p-4">Celular</th>
-                            <th className="border border-slate-600 text-white p-4">Status</th>
-                            <th className="border border-slate-600 text-white p-4">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {alunos.map((aluno, index) => (
-                            <tr
-                                className="border-b-2 text-center odd:bg-slate-300 even:bg-slate-100 hover:bg-slate-600 hover:text-white hover:cursor-pointer"
-                                key={aluno.cpf ?? index}
-                            >
-                                <td className="p-3">{aluno.nome} {aluno.sobrenome}</td>
-                                <td className="p-3">{aluno.cpf}</td>
-                                <td className="p-3">{aluno.celular}</td>
-                                <td className="p-3">
-                                    <span className={`px-2 py-1 rounded-full text-white text-xs font-semibold
-                                        ${aluno.statusAluno === "ATIVO" ? "bg-emerald-500" :
-                                          aluno.statusAluno === "INATIVO" ? "bg-red-500" :
-                                          "bg-yellow-500"}`}>
-                                        {aluno.statusAluno}
-                                    </span>
-                                </td>
-                                <td className="p-3">
-                                    <a href="#" className="inline-block bg-sky-600 p-2 m-1 w-1/4 rounded-md text-white text-center">Detalhes</a>
-                                    <a href="#" className="inline-block bg-emerald-400 p-2 m-1 w-1/4 rounded-md text-white text-center">Atualizar</a>
-                                    <a href="#" className="inline-block bg-red-600 p-2 m-1 w-1/4 rounded-md text-white text-center">Deletar</a>
-                                </td>
+    const totalPaginas = Math.ceil(alunosFiltrados.length / ALUNOS_POR_PAGINA);
+
+    const alunosPaginados = alunosFiltrados.slice(
+        (paginaAtual - 1) * ALUNOS_POR_PAGINA,
+        paginaAtual * ALUNOS_POR_PAGINA
+    );
+
+    const handleBusca = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setBusca(e.target.value);
+        setPaginaAtual(1);
+    };
+
+    return (
+        <main style={{
+            minHeight: "76vh",
+            backgroundColor: "var(--bg)",
+            padding: "40px 16px",
+            fontFamily: "var(--sans)"
+        }}>
+            <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+
+                {/* Cabeçalho */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+                    <h1 style={{ fontSize: "24px", fontWeight: 600, margin: 0, color: "var(--text-h)" }}>
+                        Lista de Alunos
+                    </h1>
+                    <a
+                        href="#"
+                        style={{
+                            backgroundColor: "#f97316",
+                            color: "#fff",
+                            fontSize: "14px",
+                            fontWeight: 600,
+                            padding: "8px 18px",
+                            borderRadius: "8px",
+                            textDecoration: "none",
+                        }}
+                    >
+                        + Novo Aluno
+                    </a>
+                </div>
+
+                {/* Busca */}
+                <input
+                    type="text"
+                    placeholder="Buscar aluno..."
+                    value={busca}
+                    onChange={handleBusca}
+                    style={{
+                        width: "100%",
+                        marginBottom: "16px",
+                        padding: "10px 16px",
+                        borderRadius: "8px",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg)",
+                        color: "var(--text-h)",
+                        fontSize: "14px",
+                        outline: "none",
+                        boxSizing: "border-box",
+                        fontFamily: "var(--sans)"
+                    }}
+                />
+
+                {/* Tabela */}
+                <div style={{
+                    backgroundColor: "var(--bg)",
+                    borderRadius: "12px",
+                    border: "1px solid var(--border)",
+                    overflow: "hidden"
+                }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                        <thead>
+                            <tr style={{ backgroundColor: "var(--code-bg)" }}>
+                                {["Nome", "CPF", "Telefone", "Status", "Ações"].map((col, i) => (
+                                    <th key={col} style={{
+                                        padding: "12px 16px",
+                                        textAlign: i === 0 ? "left" : "center",
+                                        color: "var(--text)",
+                                        fontWeight: 600,
+                                        fontSize: "12px",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.05em",
+                                        borderBottom: "1px solid var(--border)"
+                                    }}>
+                                        {col}
+                                    </th>
+                                ))}
                             </tr>
+                        </thead>
+                        <tbody>
+                            {alunosPaginados.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} style={{ padding: "40px", textAlign: "center", color: "var(--text)" }}>
+                                        Nenhum aluno encontrado.
+                                    </td>
+                                </tr>
+                            ) : (
+                                alunosPaginados.map((aluno, index) => (
+                                    <tr
+                                        key={aluno.cpf ?? index}
+                                        style={{ borderBottom: "1px solid var(--border)" }}
+                                    >
+                                        <td style={{ padding: "14px 16px", textAlign: "left", fontWeight: 500, color: "var(--text-h)" }}>
+                                            {aluno.nome} {aluno.sobrenome}
+                                        </td>
+                                        <td style={{ padding: "14px 16px", textAlign: "center", color: "var(--text)" }}>
+                                            {aluno.cpf}
+                                        </td>
+                                        <td style={{ padding: "14px 16px", textAlign: "center", color: "var(--text)" }}>
+                                            {aluno.celular}
+                                        </td>
+                                        <td style={{ padding: "14px 16px", textAlign: "center" }}>
+                                            <span style={{
+                                                padding: "4px 12px",
+                                                borderRadius: "999px",
+                                                fontSize: "12px",
+                                                fontWeight: 600,
+                                                color: "#fff",
+                                                backgroundColor: aluno.statusAluno === "ATIVO"
+                                                    ? "#22c55e"
+                                                    : aluno.statusAluno === "INATIVO"
+                                                        ? "#f97316"
+                                                        : "#eab308"
+                                            }}>
+                                                {aluno.statusAluno === "ATIVO" ? "Ativo" : "Inativo"}
+                                            </span>
+                                        </td>
+                                        <td style={{ padding: "14px 16px", textAlign: "center" }}>
+                                            <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                                                <a href="#" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "6px", textDecoration: "none", fontWeight: 500, backgroundColor: "#e0f2fe", color: "#0369a1", border: "1px solid #bae6fd" }}>Detalhes</a>
+                                                <a href="#" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "6px", textDecoration: "none", fontWeight: 500, backgroundColor: "#dcfce7", color: "#15803d", border: "1px solid #bbf7d0" }}>Editar</a>
+                                                <a href="#" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "6px", textDecoration: "none", fontWeight: 500, backgroundColor: "#fee2e2", color: "#b91c1c", border: "1px solid #fecaca" }}>Deletar</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Paginação */}
+                {totalPaginas > 1 && (
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "6px", marginTop: "20px", alignItems: "center" }}>
+                        <PaginaBtn onClick={() => setPaginaAtual(p => Math.max(p - 1, 1))} disabled={paginaAtual === 1}>
+                            &lt;
+                        </PaginaBtn>
+                        {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(num => (
+                            <PaginaBtn key={num} onClick={() => setPaginaAtual(num)} ativo={paginaAtual === num}>
+                                {num}
+                            </PaginaBtn>
                         ))}
-                    </tbody>
-                </table>
+                        <PaginaBtn onClick={() => setPaginaAtual(p => Math.min(p + 1, totalPaginas))} disabled={paginaAtual === totalPaginas}>
+                            &gt;
+                        </PaginaBtn>
+                    </div>
+                )}
             </div>
         </main>
     );
 }
 
-export default ListagemAlunos;
+function PaginaBtn({ onClick, disabled, ativo, children }: {
+    onClick: () => void;
+    disabled?: boolean;
+    ativo?: boolean;
+    children: React.ReactNode;
+}) {
+    return (
+        <button
+            onClick={onClick}
+            disabled={disabled}
+            style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "6px",
+                border: "1px solid var(--border)",
+                backgroundColor: ativo ? "#f97316" : "var(--bg)",
+                color: ativo ? "#fff" : "var(--text-h)",
+                fontSize: "13px",
+                fontWeight: 500,
+                cursor: disabled ? "not-allowed" : "pointer",
+                opacity: disabled ? 0.4 : 1,
+            }}
+        >
+            {children}
+        </button>
+    );
+}
+
+export default ListagemAlunos

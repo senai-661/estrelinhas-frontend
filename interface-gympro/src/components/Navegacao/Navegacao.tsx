@@ -1,15 +1,6 @@
 import { useState, type JSX } from "react";
-import { Menubar } from 'primereact/menubar';
-import type { MenuItem } from 'primereact/menuitem';
-import { Avatar } from 'primereact/avatar';
 import { useNavigate } from 'react-router-dom';
-import AuthRequests from "../fetch/AuthRequests";
-
-interface CustomMenuItem extends MenuItem {
-    badge?: number;
-    shortcut?: string;
-    items?: CustomMenuItem[];
-}
+import AuthRequests from "../../fetch/AuthRequests";
 
 function Navegacao(): JSX.Element {
     const [isAuthenticated] = useState(() => {
@@ -17,90 +8,55 @@ function Navegacao(): JSX.Element {
         const token = localStorage.getItem('token');
         return !!(isAuth && token && AuthRequests.checkTokenExpiry());
     });
+
+ 
+    const isProfessor = localStorage.getItem('role') === 'professor';
+
     const navigate = useNavigate();
-
     const nome = localStorage.getItem('nome') || 'Usuário';
-    const email = localStorage.getItem('email') || '';
-    const avatarImage = "https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png";
-
-    const items: CustomMenuItem[] = [
-        {
-            label: 'Home',
-            icon: 'pi pi-home',
-            className: 'm-5 text-white text-lg',
-            url: "/"
-        },
-        ...(isAuthenticated ? [
-            {
-                label: 'Alunos',
-                icon: 'pi pi-users',
-                className: 'm-5 text-white text-lg',
-                url: "/lista/alunos"
-            },
-            {
-                label: 'Matrículas',
-                icon: 'pi pi-file-edit',
-                className: 'm-5 text-white text-lg',
-                url: "/lista/matriculas"
-            },
-            {
-                label: 'Planos',
-                icon: 'pi pi-credit-card',
-                className: 'm-5 text-white text-lg',
-                url: "/lista/planos"
-            }
-        ] : [])
-    ];
-
-    const start = (
-        <img
-            alt="logo"
-            src='./src/assets/app-icon.png'
-            height="100"
-            className="w-[40%] max-w-[40%] ml-10"
-        />
-    );
-
-    const userActions = isAuthenticated ? (
-        <div className="flex items-center justify-end mr-10 gap-4">
-            <div className="flex flex-col pr-3">
-                <p className="text-white font-semibold m-0">{nome}</p>
-                <p className="text-white text-sm m-0">{email}</p>
-            </div>
-            <Avatar
-                image={avatarImage}
-                shape="circle"
-                className="!w-[10%] !h-[10%]"
-            />
-            <button
-                className="bg-white ml-6 text-slate-700 px-10 py-5 rounded border-none cursor-pointer flex items-center justify-center gap-1 hover:bg-gray-100 transition-colors"
-                onClick={AuthRequests.removeToken}
-                style={{ height: '32px', fontSize: '14px' }}
-            >
-                <i className="pi pi-sign-out"></i>
-                <span>Sair</span>
-            </button>
-        </div>
-    ) : (
-        <button
-            className="bg-white font-bold text-slate-700 px-10 py-5 mr-10 rounded border-none cursor-pointer flex items-center justify-center gap-1 hover:bg-gray-100 transition-colors"
-            onClick={() => navigate('/login')}
-            style={{ height: '32px', fontSize: '14px' }}
-        >
-            <i className="pi pi-sign-in"></i>
-            <span>Login</span>
-        </button>
-    );
 
     return (
-        <header className="card h-[12vh] bg-slate-700 flex items-center px-4">
-            <div className="flex-1">
-                <Menubar
-                    model={items}
-                    start={start}
-                />
+        <header style={{ backgroundColor: '#F97316', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2rem' }}>
+            <span style={{ color: 'white', fontWeight: '700', fontSize: '1.4rem' }}>Gym Pro</span>
+
+            <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                <a href="/" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Início</a>
+                {isAuthenticated && isProfessor && ( // ✅ só mostra se for professor
+                    <>
+                        <a href="/lista/alunos" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Alunos</a>
+                        <a href="/lista/matriculas" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Matrículas</a>
+                        <a href="/lista/planos" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Planos</a>
+                    </>
+                )}
+            </nav>
+
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                {isAuthenticated ? (
+                    <>
+                        <span style={{ color: 'white', fontWeight: '500' }}>{nome}</span>
+                        <button
+                            onClick={AuthRequests.removeToken}
+                            style={{ backgroundColor: 'white', color: '#F97316', border: 'none', borderRadius: '6px', padding: '8px 20px', fontWeight: '600', cursor: 'pointer' }}
+                        >
+                            Sair
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <button
+                            onClick={() => navigate('/login')}
+                            style={{ backgroundColor: 'transparent', color: 'white', border: '2px solid white', borderRadius: '6px', padding: '8px 20px', fontWeight: '600', cursor: 'pointer' }}
+                        >
+                            Entrar
+                        </button>
+                        <button
+                            style={{ backgroundColor: 'white', color: '#F97316', border: 'none', borderRadius: '6px', padding: '8px 20px', fontWeight: '600', cursor: 'pointer' }}
+                        >
+                            Cadastre-se
+                        </button>
+                    </>
+                )}
             </div>
-            {userActions}
         </header>
     );
 }

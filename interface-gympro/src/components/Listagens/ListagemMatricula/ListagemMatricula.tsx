@@ -1,24 +1,31 @@
-import { type JSX } from "react";
-import { useState, useEffect } from "react";
-import MatriculaRequests from "../../fetch/MatriculaRequests";
-import type { MatriculaDTO } from "../../dto/MatriculaDTO";
+import { type JSX, useEffect, useState } from "react";
+import MatriculaRequests from "../../../fetch/MatriculaRequests";
+import type { MatriculaDTO } from "../../../dto/MatriculaDTO";
+
+const MATRICULAS_POR_PAGINA = 6;
 
 function ListagemMatriculas(): JSX.Element {
     const [matriculas, setMatriculas] = useState<MatriculaDTO[]>([]);
+    const [paginaAtual, setPaginaAtual] = useState(1);
 
     useEffect(() => {
         const buscarMatriculas = async () => {
             try {
                 const lista = await MatriculaRequests.obterListaDeMatriculas();
-                setMatriculas(lista);
+                setMatriculas(lista ?? []);
             } catch (error) {
                 console.error(`Erro ao buscar matrículas. ${error}`);
                 alert("Erro ao criar a listagem de matrículas.");
             }
         }
-
         buscarMatriculas();
     }, []);
+
+    const totalPaginas = Math.ceil(matriculas.length / MATRICULAS_POR_PAGINA);
+    const matriculasPaginadas = matriculas.slice(
+        (paginaAtual - 1) * MATRICULAS_POR_PAGINA,
+        paginaAtual * MATRICULAS_POR_PAGINA
+    );
 
     const formatarData = (data: string | Date): string => {
         return new Date(data).toLocaleDateString("pt-BR");
@@ -29,58 +36,143 @@ function ListagemMatriculas(): JSX.Element {
     };
 
     return (
-        <main className="bg-gray-200 h-[76vh]">
-            <div className="w-8/10 flex m-auto p-12">
-                <h1 className="w-9/10 text-3xl text-center">Matrículas</h1>
-                <a href="#" className="w-1/10 p-3 text-md bg-slate-700 rounded-md text-center text-white font-bold flex items-center justify-center hover:cursor-pointer">
-                    Nova Matrícula
-                </a>
-            </div>
+        <main style={{
+            minHeight: "76vh",
+            backgroundColor: "var(--bg)",
+            padding: "40px 16px",
+            fontFamily: "var(--sans)"
+        }}>
+            <div style={{ maxWidth: "900px", margin: "0 auto" }}>
 
-            <div className="w-8/10 max-w-[80%] max-h-7/10 overflow-auto overscroll-none m-auto border border-slate-800">
-                <table className="table-auto w-full border-collapse text-sm">
-                    <thead className="bg-slate-700 sticky top-0 z-10">
-                        <tr>
-                            <th className="border border-slate-600 text-white p-4">Cód. Matrícula</th>
-                            <th className="border border-slate-600 text-white p-4">Vigência</th>
-                            <th className="border border-slate-600 text-white p-4">Valor Final</th>
-                            <th className="border border-slate-600 text-white p-4">Forma Pgto.</th>
-                            <th className="border border-slate-600 text-white p-4">Status</th>
-                            <th className="border border-slate-600 text-white p-4">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {matriculas.map((matricula, index) => (
-                            <tr
-                                className="border-b-2 text-center odd:bg-slate-300 even:bg-slate-100 hover:bg-slate-600 hover:text-white hover:cursor-pointer"
-                                key={matricula.cod_matricula ?? index}
-                            >
-                                <td className="p-3 font-mono text-xs">{matricula.cod_matricula}</td>
-                                <td className="p-3">
-                                    {formatarData(matricula.data_inicio)} → {formatarData(matricula.data_fim)}
-                                </td>
-                                <td className="p-3 font-semibold">{formatarValor(matricula.valor_final)}</td>
-                                <td className="p-3">{matricula.forma_pagamento ?? "—"}</td>
-                                <td className="p-3">
-                                    <span className={`px-2 py-1 rounded-full text-white text-xs font-semibold
-                                        ${matricula.status_matricula === "ATIVA"    ? "bg-emerald-500" :
-                                          matricula.status_matricula === "INATIVA"  ? "bg-red-500"     :
-                                          matricula.status_matricula === "PENDENTE" ? "bg-yellow-500"  :
-                                          "bg-gray-400"}`}>
-                                        {matricula.status_matricula}
-                                    </span>
-                                </td>
-                                <td className="p-3">
-                                    <a href="#" className="inline-block bg-sky-600 p-2 m-1 w-1/4 rounded-md text-white text-center">Detalhes</a>
-                                    <a href="#" className="inline-block bg-emerald-400 p-2 m-1 w-1/4 rounded-md text-white text-center">Atualizar</a>
-                                    <a href="#" className="inline-block bg-red-600 p-2 m-1 w-1/4 rounded-md text-white text-center">Deletar</a>
-                                </td>
+                {/* Cabeçalho */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+                    <h1 style={{ fontSize: "24px", fontWeight: 600, margin: 0, color: "var(--text-h)" }}>
+                        Matrículas
+                    </h1>
+                    <a href="#" style={{
+                        backgroundColor: "#f97316",
+                        color: "#fff",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                        padding: "8px 18px",
+                        borderRadius: "8px",
+                        textDecoration: "none",
+                    }}>
+                        + Nova Matrícula
+                    </a>
+                </div>
+
+                {/* Tabela */}
+                <div style={{
+                    backgroundColor: "var(--bg)",
+                    borderRadius: "12px",
+                    border: "1px solid var(--border)",
+                    overflow: "hidden"
+                }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                        <thead>
+                            <tr style={{ backgroundColor: "var(--code-bg)" }}>
+                                {["Cód. Matrícula", "Vigência", "Valor Final", "Forma Pgto.", "Status", "Ações"].map((col, i) => (
+                                    <th key={col} style={{
+                                        padding: "12px 16px",
+                                        textAlign: i === 0 ? "left" : "center",
+                                        color: "var(--text)",
+                                        fontWeight: 600,
+                                        fontSize: "12px",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.05em",
+                                        borderBottom: "1px solid var(--border)"
+                                    }}>
+                                        {col}
+                                    </th>
+                                ))}
                             </tr>
+                        </thead>
+                        <tbody>
+                            {matriculasPaginadas.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "var(--text)" }}>
+                                        Nenhuma matrícula encontrada.
+                                    </td>
+                                </tr>
+                            ) : (
+                                matriculasPaginadas.map((matricula, index) => (
+                                    <tr key={matricula.cod_matricula ?? index} style={{ borderBottom: "1px solid var(--border)" }}>
+                                        <td style={{ padding: "14px 16px", textAlign: "left", fontWeight: 500, color: "var(--text-h)", fontFamily: "monospace", fontSize: "12px" }}>
+                                            {matricula.cod_matricula}
+                                        </td>
+                                        <td style={{ padding: "14px 16px", textAlign: "center", color: "var(--text)" }}>
+                                            {formatarData(matricula.data_inicio)} → {formatarData(matricula.data_fim)}
+                                        </td>
+                                        <td style={{ padding: "14px 16px", textAlign: "center", fontWeight: 600, color: "var(--text-h)" }}>
+                                            {formatarValor(matricula.valor_final)}
+                                        </td>
+                                        <td style={{ padding: "14px 16px", textAlign: "center", color: "var(--text)" }}>
+                                            {matricula.forma_pagamento ?? "—"}
+                                        </td>
+                                        <td style={{ padding: "14px 16px", textAlign: "center" }}>
+                                            <span style={{
+                                                padding: "4px 12px",
+                                                borderRadius: "999px",
+                                                fontSize: "12px",
+                                                fontWeight: 600,
+                                                color: "#fff",
+                                                backgroundColor:
+                                                    matricula.status_matricula === "ATIVA" ? "#22c55e" :
+                                                    matricula.status_matricula === "INATIVA" ? "#ef4444" :
+                                                    matricula.status_matricula === "PENDENTE" ? "#eab308" :
+                                                    "#6b7280"
+                                            }}>
+                                                {matricula.status_matricula}
+                                            </span>
+                                        </td>
+                                        <td style={{ padding: "14px 16px", textAlign: "center" }}>
+                                            <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                                                <a href="#" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "6px", textDecoration: "none", fontWeight: 500, backgroundColor: "#e0f2fe", color: "#0369a1", border: "1px solid #bae6fd" }}>Detalhes</a>
+                                                <a href="#" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "6px", textDecoration: "none", fontWeight: 500, backgroundColor: "#dcfce7", color: "#15803d", border: "1px solid #bbf7d0" }}>Atualizar</a>
+                                                <a href="#" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "6px", textDecoration: "none", fontWeight: 500, backgroundColor: "#fee2e2", color: "#b91c1c", border: "1px solid #fecaca" }}>Deletar</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Paginação */}
+                {totalPaginas > 1 && (
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "6px", marginTop: "20px", alignItems: "center" }}>
+                        <PaginaBtn onClick={() => setPaginaAtual(p => Math.max(p - 1, 1))} disabled={paginaAtual === 1}>&lt;</PaginaBtn>
+                        {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(num => (
+                            <PaginaBtn key={num} onClick={() => setPaginaAtual(num)} ativo={paginaAtual === num}>{num}</PaginaBtn>
                         ))}
-                    </tbody>
-                </table>
+                        <PaginaBtn onClick={() => setPaginaAtual(p => Math.min(p + 1, totalPaginas))} disabled={paginaAtual === totalPaginas}>&gt;</PaginaBtn>
+                    </div>
+                )}
             </div>
         </main>
+    );
+}
+
+function PaginaBtn({ onClick, disabled, ativo, children }: {
+    onClick: () => void;
+    disabled?: boolean;
+    ativo?: boolean;
+    children: React.ReactNode;
+}) {
+    return (
+        <button onClick={onClick} disabled={disabled} style={{
+            width: "32px", height: "32px", borderRadius: "6px",
+            border: "1px solid var(--border)",
+            backgroundColor: ativo ? "#f97316" : "var(--bg)",
+            color: ativo ? "#fff" : "var(--text-h)",
+            fontSize: "13px", fontWeight: 500,
+            cursor: disabled ? "not-allowed" : "pointer",
+            opacity: disabled ? 0.4 : 1,
+        }}>
+            {children}
+        </button>
     );
 }
 
