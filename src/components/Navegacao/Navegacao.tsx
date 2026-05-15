@@ -2,7 +2,7 @@ import { useEffect, useState, type JSX } from "react";
 import { Menubar } from 'primereact/menubar';
 import type { MenuItem } from 'primereact/menuitem';
 import { Avatar } from 'primereact/avatar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthRequests from "../../fetch/AuthRequests";
 import logo from "../../assets/gympro.png";
 import professorFoto from "../../assets/personal.webp";
@@ -21,6 +21,7 @@ function Navegacao(): JSX.Element {
     });
     const [role, setRole] = useState(() => localStorage.getItem('role') || 'normal');
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const checkAuth = () => {
@@ -37,185 +38,169 @@ function Navegacao(): JSX.Element {
 
     const nome = localStorage.getItem('nome') || 'Usuário';
     const email = localStorage.getItem('email') || '';
-
     const fotoPerfil = role === 'admin' ? professorFoto : null;
 
     const menuProfessor: CustomMenuItem[] = [
-        {
-            label: 'Home',
-            icon: 'pi pi-home',
-            className: 'm-5 text-lg',
-            command: () => navigate("/")
-        },
-        {
-            label: 'Alunos',
-            icon: 'pi pi-users',
-            className: 'm-5 text-lg',
-            command: () => navigate("/lista/alunos")
-        },
-        {
-            label: 'Matrículas',
-            icon: 'pi pi-file',
-            className: 'm-5 text-lg',
-            command: () => navigate("/lista/matriculas")
-        },
-        {
-            label: 'Planos',
-            icon: 'pi pi-id-card',
-            className: 'm-5 text-lg',
-            command: () => navigate("/lista/planos")
-        }
+        { label: 'Home', icon: 'pi pi-home', command: () => navigate("/"), data: { path: '/' } },
+        { label: 'Alunos', icon: 'pi pi-users', command: () => navigate("/lista/alunos"), data: { path: '/lista/alunos' } },
+        { label: 'Matrículas', icon: 'pi pi-file', command: () => navigate("/lista/matriculas"), data: { path: '/lista/matriculas' } },
+        { label: 'Planos', icon: 'pi pi-id-card', command: () => navigate("/lista/planos"), data: { path: '/lista/planos' } }
     ];
 
     const menuAluno: CustomMenuItem[] = [
-        {
-            label: 'Home',
-            icon: 'pi pi-home',
-            className: 'm-5 text-lg',
-            command: () => navigate("/")
-        },
-        {
-            label: 'Meu Treino',
-            icon: 'pi pi-bolt',
-            className: 'm-5 text-lg',
-            command: () => navigate("/aluno/treino")
-        },
-        {
-            label: 'Pagamentos',
-            icon: 'pi pi-wallet',
-            className: 'm-5 text-lg',
-            command: () => navigate("/aluno/pagamentos")
-        },
-        {
-            label: 'Unidades',
-            icon: 'pi pi-map-marker',
-            className: 'm-5 text-lg',
-            command: () => navigate("/aluno/unidades")
-        }
+        { label: 'Home', icon: 'pi pi-home', command: () => navigate("/"), data: { path: '/' } },
+        { label: 'Meu Treino', icon: 'pi pi-bolt', command: () => navigate("/aluno/treino"), data: { path: '/aluno/treino' } },
+        { label: 'Pagamentos', icon: 'pi pi-wallet', command: () => navigate("/aluno/pagamentos"), data: { path: '/aluno/pagamentos' } },
+        { label: 'Unidades', icon: 'pi pi-map-marker', command: () => navigate("/aluno/unidades"), data: { path: '/aluno/unidades' } }
     ];
 
-    const items: CustomMenuItem[] = [
-        {
-            label: 'Home',
-            icon: 'pi pi-home',
-            className: 'm-5 text-lg',
-            command: () => navigate("/")
-        },
-        ...(isAuthenticated
-            ? (role === 'admin' ? menuProfessor.slice(1) : menuAluno.slice(1))
-            : [])
-    ];
+    const baseItems: CustomMenuItem[] = isAuthenticated
+        ? (role === 'admin' ? menuProfessor : menuAluno)
+        : [{ label: 'Home', icon: 'pi pi-home', command: () => navigate("/"), data: { path: '/' } }];
+
+    // Injeta className de ativo com base na rota atual
+    const items: CustomMenuItem[] = baseItems.map((item) => {
+        const isActive = item.data?.path && (
+            item.data.path === '/'
+                ? location.pathname === '/'
+                : location.pathname.startsWith(item.data.path)
+        );
+        return {
+            ...item,
+            className: isActive ? 'nav-item-active' : 'nav-item'
+        };
+    });
 
     const start = (
         <img
-            alt="logo"
+            alt="GymPro logo"
             src={logo}
-            style={{ width: '140px', maxWidth: '140px', marginLeft: '10px' }}
+            style={{ width: '120px', marginLeft: '4px', cursor: 'pointer' }}
+            onClick={() => navigate("/")}
         />
     );
 
     const userActions = isAuthenticated ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '24px', marginRight: '24px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', paddingRight: '24px', borderRight: '1px solid rgba(255, 115, 0, 0.35)' }}>
-                <p style={{ color: '#111111', fontWeight: 600, margin: 0, fontSize: '0.9rem' }}>{nome}</p>
-                <p style={{ color: '#8a8a8a', fontSize: '0.75rem', margin: 0 }}>{email}</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginRight: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <p style={{ color: '#ffffff', fontWeight: 700, margin: 0, fontSize: '0.85rem', lineHeight: 1.2 }}>{nome}</p>
+                <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.72rem', margin: 0 }}>{email}</p>
             </div>
 
             {fotoPerfil ? (
                 <Avatar
                     image={fotoPerfil}
                     shape="circle"
-                    style={{ width: '50px', height: '50px', border: '3px solid rgba(255, 255, 255, 0.8)' }}
+                    style={{ width: '42px', height: '42px', border: '2px solid rgba(255,255,255,0.5)', cursor: 'pointer' }}
                 />
             ) : (
-                <Avatar
-                    label={nome.charAt(0).toUpperCase()}
-                    shape="circle"
-                    style={{
-                        width: '50px', height: '50px',
-                        border: '3px solid rgba(255, 255, 255, 0.8)',
-                        backgroundColor: '#fff',
-                        color: '#f97316',
-                        fontWeight: 700,
-                        fontSize: '1.2rem'
-                    }}
-                />
+                <div style={{
+                    width: '42px', height: '42px', borderRadius: '50%',
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    border: '2px solid rgba(255,255,255,0.5)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#ffffff', fontWeight: 800, fontSize: '1rem', cursor: 'pointer'
+                }}>
+                    {nome.charAt(0).toUpperCase()}
+                </div>
             )}
 
             <button
-                className="bg-orange-500 hover:bg-orange-600 transition-all text-white px-6 py-2 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-orange-500/50"
                 onClick={AuthRequests.removeToken}
-                style={{ height: '40px', fontSize: '14px' }}
+                style={{
+                    backgroundColor: 'rgba(255,255,255,0.15)',
+                    border: '1.5px solid rgba(255,255,255,0.35)',
+                    color: '#ffffff',
+                    padding: '7px 18px',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    fontWeight: 700, fontSize: '13px',
+                    transition: 'background 0.2s'
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.25)')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.15)')}
             >
-                <i className="pi pi-sign-out"></i>
-                <span>Sair</span>
+                <i className="pi pi-sign-out" style={{ fontSize: '13px' }}></i>
+                Sair
             </button>
         </div>
     ) : (
         <button
-            className="bg-orange-500 hover:bg-orange-600 transition-all font-bold text-white px-8 py-2 mr-6 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 shadow-lg hover:shadow-orange-500/50"
             onClick={() => navigate('/login')}
-            style={{ height: '40px', fontSize: '14px' }}
+            style={{
+                backgroundColor: 'rgba(255,255,255,0.15)',
+                border: '1.5px solid rgba(255,255,255,0.35)',
+                color: '#ffffff',
+                padding: '7px 20px',
+                borderRadius: '8px',
+                marginRight: '16px',
+                cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '6px',
+                fontWeight: 700, fontSize: '13px'
+            }}
         >
-            <i className="pi pi-sign-in"></i>
-            <span>Login</span>
+            <i className="pi pi-sign-in" style={{ fontSize: '13px' }}></i>
+            Login
         </button>
     );
 
     return (
         <>
-            <style>
-                {`
-                    .p-menubar .p-menuitem-link {
-                        color: #000000 !important;
-                        font-weight: 600 !important;
-                        padding: 12px 16px !important;
-                        border-radius: 8px !important;
-                        margin: 0 4px !important;
-                        transition: all 0.3s ease !important;
-                        font-size: 1rem !important;
-                        text-decoration: none !important;
-                    }
-                    .p-menubar .p-menuitem-link:hover {
-                        color: #000000 !important;
-                        background-color: rgba(255, 255, 255, 0.15) !important;
-                        transform: translateY(-2px) !important;
-                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-                    }
-                    .p-menubar .p-menuitem-icon {
-                        color: #000000 !important;
-                        margin-right: 8px !important;
-                        font-size: 1.1rem !important;
-                    }
-                    .p-menubar .p-menuitem-link:not(.router-link-active):hover .p-menuitem-icon {
-                        color: #000000 !important;
-                    }
-                    .p-menubar {
-                        padding: 8px 0 !important;
-                    }
-                `}
-            </style>
+            <style>{`
+                .p-menubar {
+                    background: transparent !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    padding: 0 !important;
+                }
+                .p-menubar .p-menuitem-link {
+                    color: rgba(255,255,255,0.85) !important;
+                    font-weight: 700 !important;
+                    font-size: 0.9rem !important;
+                    padding: 8px 14px !important;
+                    border-radius: 8px !important;
+                    margin: 0 2px !important;
+                    transition: all 0.2s ease !important;
+                    text-decoration: none !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    gap: 6px !important;
+                }
+                .p-menubar .p-menuitem-link:hover {
+                    background-color: rgba(255,255,255,0.15) !important;
+                    color: #ffffff !important;
+                }
+                .p-menubar .p-menuitem-icon {
+                    color: rgba(255,255,255,0.75) !important;
+                    font-size: 0.85rem !important;
+                    margin-right: 0 !important;
+                }
+                .nav-item-active .p-menuitem-link {
+                    background-color: rgba(255,255,255,0.2) !important;
+                    color: #ffffff !important;
+                }
+                .nav-item-active .p-menuitem-link .p-menuitem-icon {
+                    color: #ffffff !important;
+                }
+                .p-menubar .p-menubar-root-list {
+                    gap: 2px !important;
+                }
+            `}</style>
+
             <header style={{
-                height: '12vh',
-                backgroundColor: '#ff7300',
-                backgroundImage: 'linear-gradient(90deg, #ff7300 0%, #ff8c00 100%)',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.12)',
+                height: '72px',
+                backgroundColor: '#ff7a2b',
                 display: 'flex',
                 alignItems: 'center',
-                padding: '0 24px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.15)'
+                justifyContent: 'space-between',
+                padding: '0 28px',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+                position: 'sticky',
+                top: 0,
+                zIndex: 50
             }}>
-                <div style={{ flex: 1 }}>
-                    <Menubar
-                        model={items}
-                        start={start}
-                        style={{
-                            backgroundColor: 'transparent',
-                            border: 'none',
-                            boxShadow: 'none'
-                        }}
-                    />
-                </div>
+                <Menubar model={items} start={start} />
                 {userActions}
             </header>
         </>
