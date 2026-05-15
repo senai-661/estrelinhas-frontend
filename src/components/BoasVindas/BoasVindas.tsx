@@ -42,4 +42,4 @@ function BoasVindas(): JSX.Element {
     );
 }
 
-export default BoasVindas;
+export default BoasVindas
