@@ -1,5 +1,5 @@
 import { type JSX, useState } from 'react';
-import estilo from '../../components/FormLogin/';
+import estilo from './FormLogin.module.css'
 import AuthRequests from '../../fetch/AuthRequests';
 
 function FormLogin(): JSX.Element {
@@ -80,4 +80,4 @@ function FormLogin(): JSX.Element {
     );
 }
 
-export default FormLogin;
+export default FormLogin

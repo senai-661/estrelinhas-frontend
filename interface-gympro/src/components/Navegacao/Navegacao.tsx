@@ -1,223 +1,104 @@
-import { useEffect, useState, type JSX } from "react";
-import { Menubar } from 'primereact/menubar';
-import type { MenuItem } from 'primereact/menuitem';
-import { Avatar } from 'primereact/avatar';
+import { useState, type JSX } from "react";
 import { useNavigate } from 'react-router-dom';
 import AuthRequests from "../../fetch/AuthRequests";
-import professorFoto from "../../assets/professor.png";
-
-interface CustomMenuItem extends MenuItem {
-    badge?: number;
-    shortcut?: string;
-    items?: CustomMenuItem[];
-}
 
 function Navegacao(): JSX.Element {
-    const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const [isAuthenticated] = useState(() => {
         const isAuth = localStorage.getItem('isAuth');
         const token = localStorage.getItem('token');
         return !!(isAuth && token && AuthRequests.checkTokenExpiry());
     });
-    const [role, setRole] = useState(() => localStorage.getItem('role') || 'normal');
+
+    const role = localStorage.getItem('role');
+    const isProfessor = role?.toLowerCase() === 'admin';
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const checkAuth = () => {
-            const isAuth = localStorage.getItem('isAuth');
-            const token = localStorage.getItem('token');
-            const authenticated = !!(isAuth && token && AuthRequests.checkTokenExpiry());
-            setIsAuthenticated(authenticated);
-            setRole(localStorage.getItem('role') || 'normal');
-        };
-        checkAuth();
-        const interval = setInterval(checkAuth, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
     const nome = localStorage.getItem('nome') || 'Usuário';
     const email = localStorage.getItem('email') || '';
-
-    const fotoPerfil = role === 'admin' ? professorFoto : null;
-
-    const menuProfessor: CustomMenuItem[] = [
-        {
-            label: 'Home',
-            icon: 'pi pi-home',
-            className: 'm-5 text-lg',
-            command: () => navigate("/")
-        },
-        {
-            label: 'Alunos',
-            icon: 'pi pi-users',
-            className: 'm-5 text-lg',
-            command: () => navigate("/lista/alunos")
-        },
-        {
-            label: 'Matrículas',
-            icon: 'pi pi-file',
-            className: 'm-5 text-lg',
-            command: () => navigate("/lista/matriculas")
-        },
-        {
-            label: 'Planos',
-            icon: 'pi pi-id-card',
-            className: 'm-5 text-lg',
-            command: () => navigate("/lista/planos")
-        }
-    ];
-
-    const menuAluno: CustomMenuItem[] = [
-        {
-            label: 'Home',
-            icon: 'pi pi-home',
-            className: 'm-5 text-lg',
-            command: () => navigate("/")
-        },
-        {
-            label: 'Meu Treino',
-            icon: 'pi pi-bolt',
-            className: 'm-5 text-lg',
-            command: () => navigate("/aluno/treino")
-        },
-        {
-            label: 'Pagamentos',
-            icon: 'pi pi-wallet',
-            className: 'm-5 text-lg',
-            command: () => navigate("/aluno/pagamentos")
-        },
-        {
-            label: 'Unidades',
-            icon: 'pi pi-map-marker',
-            className: 'm-5 text-lg',
-            command: () => navigate("/aluno/unidades")
-        }
-    ];
-
-    const items: CustomMenuItem[] = [
-        {
-            label: 'Home',
-            icon: 'pi pi-home',
-            className: 'm-5 text-lg',
-            command: () => navigate("/")
-        },
-        ...(isAuthenticated
-            ? (role === 'admin' ? menuProfessor.slice(1) : menuAluno.slice(1))
-            : [])
-    ];
-
-    const start = (
-        <img
-            alt="logo"
-            src={logo}
-            style={{ width: '140px', maxWidth: '140px', marginLeft: '10px' }}
-        />
-    );
-
-    const userActions = isAuthenticated ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '24px', marginRight: '24px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', paddingRight: '24px', borderRight: '1px solid rgba(255, 115, 0, 0.35)' }}>
-                <p style={{ color: '#111111', fontWeight: 600, margin: 0, fontSize: '0.9rem' }}>{nome}</p>
-                <p style={{ color: '#8a8a8a', fontSize: '0.75rem', margin: 0 }}>{email}</p>
-            </div>
-
-            {fotoPerfil ? (
-                <Avatar
-                    image={fotoPerfil}
-                    shape="circle"
-                    style={{ width: '50px', height: '50px', border: '3px solid rgba(255, 255, 255, 0.8)' }}
-                />
-            ) : (
-                <Avatar
-                    label={nome.charAt(0).toUpperCase()}
-                    shape="circle"
-                    style={{
-                        width: '50px', height: '50px',
-                        border: '3px solid rgba(255, 255, 255, 0.8)',
-                        backgroundColor: '#fff',
-                        color: '#f97316',
-                        fontWeight: 700,
-                        fontSize: '1.2rem'
-                    }}
-                />
-            )}
-
-            <button
-                className="bg-orange-500 hover:bg-orange-600 transition-all text-white px-6 py-2 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-orange-500/50"
-                onClick={AuthRequests.removeToken}
-                style={{ height: '40px', fontSize: '14px' }}
-            >
-                <i className="pi pi-sign-out"></i>
-                <span>Sair</span>
-            </button>
-        </div>
-    ) : (
-        <button
-            className="bg-orange-500 hover:bg-orange-600 transition-all font-bold text-white px-8 py-2 mr-6 rounded-lg border-none cursor-pointer flex items-center justify-center gap-2 shadow-lg hover:shadow-orange-500/50"
-            onClick={() => navigate('/login')}
-            style={{ height: '40px', fontSize: '14px' }}
-        >
-            <i className="pi pi-sign-in"></i>
-            <span>Login</span>
-        </button>
-    );
+    const foto = localStorage.getItem('foto') || null;
 
     return (
-        <>
-            <style>
-                {`
-                    .p-menubar .p-menuitem-link {
-                        color: #000000 !important;
-                        font-weight: 600 !important;
-                        padding: 12px 16px !important;
-                        border-radius: 8px !important;
-                        margin: 0 4px !important;
-                        transition: all 0.3s ease !important;
-                        font-size: 1rem !important;
-                        text-decoration: none !important;
-                    }
-                    .p-menubar .p-menuitem-link:hover {
-                        color: #000000 !important;
-                        background-color: rgba(255, 255, 255, 0.15) !important;
-                        transform: translateY(-2px) !important;
-                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-                    }
-                    .p-menubar .p-menuitem-icon {
-                        color: #000000 !important;
-                        margin-right: 8px !important;
-                        font-size: 1.1rem !important;
-                    }
-                    .p-menubar .p-menuitem-link:not(.router-link-active):hover .p-menuitem-icon {
-                        color: #000000 !important;
-                    }
-                    .p-menubar {
-                        padding: 8px 0 !important;
-                    }
-                `}
-            </style>
-            <header style={{
-                height: '12vh',
-                backgroundColor: '#ff7300',
-                backgroundImage: 'linear-gradient(90deg, #ff7300 0%, #ff8c00 100%)',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 24px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.15)'
-            }}>
-                <div style={{ flex: 1 }}>
-                    <Menubar
-                        model={items}
-                        start={start}
-                        style={{
-                            backgroundColor: 'transparent',
-                            border: 'none',
-                            boxShadow: 'none'
-                        }}
-                    />
-                </div>
-                {userActions}
-            </header>
-        </>
+        <header style={{
+            backgroundColor: '#F97316',
+            height: '64px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 2rem',
+            fontFamily: "'Segoe UI', sans-serif"
+        }}>
+            {/* Logo */}
+            <span style={{ color: 'white', fontWeight: '800', fontSize: '1.5rem', fontStyle: 'italic', letterSpacing: '-0.5px' }}>
+                GymPro
+            </span>
+
+            {/* Nav Links */}
+            <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                <a href="/" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Home</a>
+
+                {isAuthenticated && isProfessor && (
+                    <>
+                        <a href="/lista/alunos" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Alunos</a>
+                        <a href="/lista/matriculas" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Matrículas</a>
+                        <a href="/lista/planos" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Planos</a>
+                    </>
+                )}
+            </nav>
+
+            {/* Usuário / Botões */}
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                {isAuthenticated ? (
+                    <>
+                        {/* Nome e email */}
+                        <div style={{ textAlign: 'right' }}>
+                            <div style={{ color: 'white', fontWeight: '600', fontSize: '0.95rem' }}>{nome}</div>
+                            {email && (
+                                <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.75rem' }}>{email}</div>
+                            )}
+                        </div>
+
+                        {/* Foto de perfil */}
+                        {foto ? (
+                            <img
+                                src={foto}
+                                alt="Perfil"
+                                style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white' }}
+                            />
+                        ) : (
+                            <div style={{
+                                width: '38px', height: '38px', borderRadius: '50%',
+                                backgroundColor: 'rgba(255,255,255,0.3)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                color: 'white', fontWeight: '700', fontSize: '1rem',
+                                border: '2px solid white'
+                            }}>
+                                {nome.charAt(0).toUpperCase()}
+                            </div>
+                        )}
+
+                        <button
+                            onClick={AuthRequests.removeToken}
+                            style={{ backgroundColor: 'white', color: '#F97316', border: 'none', borderRadius: '6px', padding: '8px 20px', fontWeight: '600', cursor: 'pointer' }}
+                        >
+                            Sair
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <button
+                            onClick={() => navigate('/login')}
+                            style={{ backgroundColor: 'transparent', color: 'white', border: '2px solid white', borderRadius: '6px', padding: '8px 20px', fontWeight: '600', cursor: 'pointer' }}
+                        >
+                            Entrar
+                        </button>
+                        <button
+                            style={{ backgroundColor: 'white', color: '#F97316', border: 'none', borderRadius: '6px', padding: '8px 20px', fontWeight: '600', cursor: 'pointer' }}
+                        >
+                            Cadastre-se
+                        </button>
+                    </>
+                )}
+            </div>
+        </header>
     );
 }
 

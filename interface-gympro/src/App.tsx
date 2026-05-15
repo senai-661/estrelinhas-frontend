@@ -2,9 +2,9 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PHome from './pages/PHome/PHome'
 import PLogin from './pages/PLogin/PLogin'
-import PListagemPlano from './pages/PListagem/PListagemPlano/PListagemPlano'
-import PListagemAluno from './pages/PListagem/PListagemAluno/PListagemAluno'
-import PListagemMatricula from './pages/PListagem/PListagemMatricula/PListagemMatricula'
+import PListagemAluno from './pages/PListagens/PListagemAlunos/PListagemAlunos'
+import PListagemPlano from './pages/PListagens/PListagemPlano/PListagemPlano'
+import PListagemMatricula from './pages/PListagens/PListagemMatricula/PListagemMatricula'
 
 function App() {
   return (
