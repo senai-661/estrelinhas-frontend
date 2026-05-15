@@ -1,6 +1,6 @@
 import { type JSX, useState } from 'react';
 import estilo from './FormLogin.module.css';
-import AuthRequests from '../../../fetch/AuthRequests';
+import AuthRequests from '../../services/AuthRequests';
 
 function FormLogin(): JSX.Element {
     const [email, setEmail] = useState('');
