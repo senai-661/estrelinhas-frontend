@@ -1,7 +1,7 @@
 import { type JSX, useState, useEffect } from "react";
 import PlanoRequests from "../../../fetch/PlanoRequests";
 import AuthRequests from "../../../fetch/AuthRequests";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 function ListagemPlanos(): JSX.Element {
     const [planos, setPlanos] = useState<any[]>([]);

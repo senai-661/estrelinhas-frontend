@@ -4,8 +4,7 @@ import type { MenuItem } from 'primereact/menuitem';
 import { Avatar } from 'primereact/avatar';
 import { useNavigate } from 'react-router-dom';
 import AuthRequests from "../../fetch/AuthRequests";
-import logo from "../../assets/gympro.png";
-import professorFoto from "../../assets/personal.webp";
+import professorFoto from "../../assets/professor.png";
 
 interface CustomMenuItem extends MenuItem {
     badge?: number;
