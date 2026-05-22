@@ -9,5 +9,6 @@ export default interface AlunoDTO {
     email: string,
     celular?: string,
     senha?: string,
+    ra?: string,
     status_aluno?: string
 }

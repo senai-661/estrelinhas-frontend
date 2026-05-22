@@ -1,8 +1,8 @@
 import { type JSX } from "react";
 
 import Navegacao from "../../../components/Navegacao/Navegacao";
-import ListagemAlunos from "../../../components/Listagens/ListagemAluno/ListagemAluno";
 import Rodape from "../../../components/Rodape/Rodape";
+import ListagemAlunos from "../../../components/Listagens/ListagemAlunos/ListagemAlunos";
 
 function PListagemAluno(): JSX.Element {
     return (

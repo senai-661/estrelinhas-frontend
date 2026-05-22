@@ -1,4 +1,3 @@
-// Classe responsável por fazer requisições à API - aluno
 class AlunoRequests {
     private serverURL;
     private endpointAluno;
@@ -19,7 +18,7 @@ class AlunoRequests {
                 }
             });
 
-            if(respostaAPI.ok) {
+            if (respostaAPI.ok) {
                 const listaDeAlunos = await respostaAPI.json();
                 return listaDeAlunos;
             } else {
@@ -30,6 +29,30 @@ class AlunoRequests {
             return;
         }
     }
+
+    // 👇 Método novo
+    async obterAlunoPorId(id_aluno: number) {
+        try {
+            const token = localStorage.getItem('token');
+
+            const respostaAPI = await fetch(`${this.serverURL}${this.endpointAluno}/${id_aluno}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${token}`
+                }
+            });
+
+            if (respostaAPI.ok) {
+                const aluno = await respostaAPI.json();
+                return aluno;
+            } else {
+                throw new Error("Não foi possível encontrar o aluno.");
+            }
+        } catch (error) {
+            console.error(`Erro ao buscar aluno por ID. ${error}`);
+            return null;
+        }
+    }
 }
 
-export default new AlunoRequests;
+export default new AlunoRequests();

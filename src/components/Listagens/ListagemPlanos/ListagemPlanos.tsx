@@ -1,6 +1,6 @@
 import { type JSX, useState, useEffect } from "react";
-import PlanoRequests from "../../../fetch/PlanoRequests";
-import AuthRequests from "../../../fetch/AuthRequests";
+import PlanoRequests from "../../../fetch/PlanoRequest";
+import AuthRequests from "../../../fetch/AuthRequest";
 import { useNavigate } from "react-router-dom";
 
 function ListagemPlanos(): JSX.Element {

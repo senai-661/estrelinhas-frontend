@@ -1,6 +1,6 @@
 import { type JSX, useEffect, useState } from "react";
-import MatriculaRequests from "../../../fetch/MatriculaRequests";
-import AuthRequests from "../../../fetch/AuthRequests";
+import MatriculaRequests from "../../../fetch/MatriculaRequest";
+import AuthRequests from "../../../fetch/AuthRequest";
 
 function ListagemMatriculas(): JSX.Element {
     const [matriculas, setMatriculas] = useState<any[]>([]);

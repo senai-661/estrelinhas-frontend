@@ -1,6 +1,6 @@
 import { type JSX } from "react";
 import { useState, useEffect } from "react";
-import AlunoRequests from "../../../requests/AlunoRequests";
+import AlunoRequests from "../../../fetch/AlunoRequest";
 import type AlunoDTO from "../../../dto/AlunoDTO";
 
 function ListagemAlunos(): JSX.Element {
