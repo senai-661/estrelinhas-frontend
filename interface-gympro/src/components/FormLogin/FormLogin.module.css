@@ -1,0 +1,122 @@
+.login-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 72px);
+  background: linear-gradient(180deg, #fffdf9 0%, #fff5e6 40%, #ffffff 100%);
+  padding: 2rem 0;
+}
+
+.login-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: none;
+  pointer-events: none;
+}
+
+.login-form {
+  background-color: #ffffff;
+  padding: 2.75rem;
+  border-radius: 28px;
+  box-shadow: 0px 30px 80px rgba(15, 23, 42, 0.09);
+  width: 100%;
+  max-width: 460px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-form:hover {
+  box-shadow: 0px 36px 110px rgba(15, 23, 42, 0.12);
+  transform: translateY(-4px);
+}
+
+.login-form h2 {
+  text-align: center;
+  margin: 0 0 30px 0;
+  color: #000000;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.login-header {
+  font-size: 2rem;
+  color: #000000;
+  font-weight: 700;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-group input::placeholder {
+  color: #999999;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #ff7300;
+  background-color: #fffbf0;
+  box-shadow: 0px 0px 0px 3px rgba(255, 115, 0, 0.1);
+}
+
+.login-button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 2.5rem;
+  background: linear-gradient(135deg, #fb7a2c 0%, #ff9c3e 100%);
+  border: none;
+  border-radius: 18px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow: 0px 18px 36px rgba(251, 122, 44, 0.18);
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-button:hover {
+  background: linear-gradient(135deg, #ff8c00 0%, #ffb000 100%);
+  box-shadow: 0px 20px 40px rgba(255, 115, 0, 0.28);
+  transform: translateY(-2px);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+.input-email-login,
+.input-password-login {
+  margin-top: 0.75rem;
+}
