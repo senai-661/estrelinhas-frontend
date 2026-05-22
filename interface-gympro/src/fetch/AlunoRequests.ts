@@ -23,6 +23,7 @@ class AlunoRequests {
 
             if(respostaAPI.ok) {
                 const listaDeAlunos = await respostaAPI.json();
+                console.log(listaDeAlunos[0]);
                 return listaDeAlunos;
             } else {
                 throw new Error("Não foi possível listar os alunos.");
