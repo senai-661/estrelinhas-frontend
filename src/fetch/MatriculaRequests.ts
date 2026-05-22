@@ -73,7 +73,7 @@ class MatriculaRequests {
             const lista = Array.isArray(raw) ? raw : raw.matriculas ?? raw.data ?? raw.resultado ?? raw.result ?? raw.items ?? [];
 
             if (lista.length > 0) {
-                console.log('🔍 Exemplo de matrícula retornado pela API:', lista[0]);
+                console.log(' Exemplo de matrícula retornado pela API:', lista[0]);
             }
 
             return lista.map(normalizarMatricula);

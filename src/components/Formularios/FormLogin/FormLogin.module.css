@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   height: 88vh;
-  background: linear-gradient(180deg, #fffdf9 0%, #fff5e6 45%, #ffffff 100%);
+  background: linear-gradient(135deg, #fffdf9 0%, #fff5e6 45%, #ffffff 100%);
   position: relative;
   overflow: hidden;
 }
@@ -22,94 +22,94 @@
 .login-form {
   background-color: #ffffff;
   padding: 2.5rem;
-  border-radius: 16px;
-  box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.4), 0px 0px 0px 1px rgba(255, 115, 0, 0.2);
+  border-radius: 20px;
+  box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.08), 0px 0px 0px 1px rgba(255, 115, 0, 0.15);
   width: 100%;
   max-width: 420px;
   border-top: 4px solid #ff7300;
   position: relative;
   z-index: 1;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .login-form:hover {
-  box-shadow: 0px 30px 80px rgba(255, 115, 0, 0.2), 0px 0px 0px 1px rgba(255, 115, 0, 0.3);
-  transform: translateY(-5px);
+  box-shadow: 0px 30px 80px rgba(255, 115, 0, 0.12), 0px 0px 0px 1px rgba(255, 115, 0, 0.25);
+  transform: translateY(-4px);
 }
 
 .login-form h2 {
   text-align: center;
-  margin: 0 0 30px 0;
+  margin: 0 0 2rem 0;
   color: #000000;
   font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .login-header {
   font-size: 2rem;
   color: #000000;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+  color: #111827;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px 14px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #e6e2dc;
+  border-radius: 12px;
   background-color: #ffffff;
   color: #000000;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
+  font-size: 0.95rem;
+  transition: all 0.15s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .form-group input::placeholder {
-  color: #999999;
+  color: #9ca3af;
 }
 
 .form-group input:focus {
   outline: none;
   border-color: #ff7300;
   background-color: #fffbf0;
-  box-shadow: 0px 0px 0px 3px rgba(255, 115, 0, 0.1);
+  box-shadow: 0px 0px 0px 3px rgba(255, 115, 0, 0.12);
 }
 
 .login-button {
   width: 100%;
-  padding: 14px;
-  margin-top: 2.5rem;
+  padding: 0.75rem 1.5rem;
+  margin-top: 2rem;
   background: linear-gradient(135deg, #ff7300 0%, #ff8c00 100%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: none;
   border-radius: 12px;
   color: #ffffff;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-  box-shadow: 0px 15px 30px rgba(255, 115, 0, 0.2);
+  transition: all 0.2s ease;
+  box-shadow: 0px 12px 28px rgba(255, 115, 0, 0.24);
   text-transform: uppercase;
-  letter-spacing: 0.75px;
-  display: inline-flex;
+  letter-spacing: 0.05em;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .login-button:hover {
-  background: linear-gradient(135deg, #ff8c00 0%, #ffb000 100%);
-  box-shadow: 0px 20px 40px rgba(255, 115, 0, 0.28);
+  background: linear-gradient(135deg, #ff8c00 0%, #ff9500 100%);
+  box-shadow: 0px 16px 36px rgba(255, 115, 0, 0.32);
   transform: translateY(-2px);
 }
 
@@ -119,5 +119,5 @@
 
 .input-email-login,
 .input-password-login {
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
