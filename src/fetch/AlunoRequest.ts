@@ -1,3 +1,5 @@
+import type AlunoDTO from "../dto/AlunoDTO";
+
 class AlunoRequests {
     private serverURL;
     private endpointAluno;
@@ -30,11 +32,9 @@ class AlunoRequests {
         }
     }
 
-    // 👇 Método novo
-    async obterAlunoPorId(id_aluno: number) {
+    async obterAlunoPorId(id_aluno: number): Promise<AlunoDTO | undefined> {
         try {
             const token = localStorage.getItem('token');
-
             const respostaAPI = await fetch(`${this.serverURL}${this.endpointAluno}/${id_aluno}`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,14 +43,14 @@ class AlunoRequests {
             });
 
             if (respostaAPI.ok) {
-                const aluno = await respostaAPI.json();
+                const aluno: AlunoDTO = await respostaAPI.json();
                 return aluno;
             } else {
-                throw new Error("Não foi possível encontrar o aluno.");
+                throw new Error("Não foi possível buscar o aluno.");
             }
         } catch (error) {
-            console.error(`Erro ao buscar aluno por ID. ${error}`);
-            return null;
+            console.error(`Erro ao fazer a consulta de aluno por ID. ${error}`);
+            return;
         }
     }
 }

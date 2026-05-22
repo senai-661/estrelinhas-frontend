@@ -1,5 +1,5 @@
 export default interface AlunoDTO {
-    id_aluno?: number,
+    idAluno?: number,
     cod_aluno?: string,
     nome: string,
     sobrenome: string,
