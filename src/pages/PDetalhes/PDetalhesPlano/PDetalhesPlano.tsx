@@ -1,23 +1,20 @@
 import { type JSX } from "react";
 import Navegacao from "../../../components/Navegacao/Navegacao";
-import DetalhesAluno from "../../../components/Listagens/DetalhesAluno/DetalhesAluno";
+import DetalhesPlano from "../../../components/Listagens/DetalhesPlano/DetalhesPlano";
 import Rodape from "../../../components/Rodape/Rodape";
 import { useParams } from "react-router-dom";
 
-function PDetalhesAluno(): JSX.Element {
-    const { id_aluno } = useParams();  // Recebe o ID do registro acessado
-
+function PDetalhesPlano(): JSX.Element {
+    const { id_plano } = useParams<{ id_plano: string }>();
     return (
         <>
             <Navegacao />
-
             <main>
-                <DetalhesAluno id_aluno={Number(id_aluno)} />  {/* Envia o ID para o componente */}
+                <DetalhesPlano id_plano={id_plano ?? ""} />
             </main>
-
             <Rodape />
         </>
     );
 }
 
-export default PDetalhesAluno;
+export default PDetalhesPlano;

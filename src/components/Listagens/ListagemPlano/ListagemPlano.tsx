@@ -59,33 +59,46 @@ function ListagemPlanos(): JSX.Element {
                         </tr>
                     </thead>
                     <tbody>
-                        {planosPagina.length > 0 ? planosPagina.map((plano, index) => (
-                            <tr key={plano.codPlano ?? index}
-                                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff8f5')}
-                                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}>
-                                <td style={tdStyle}>{plano.codPlano}</td>
-                                <td style={tdStyle}>{plano.tipoPlano}</td>
-                                <td style={{ ...tdStyle, fontWeight: 700 }}>
-                                    R$ {Number(plano.valor).toFixed(2)}
-                                </td>
-                                <td style={tdStyle}>
-                                    <span style={{
-                                        backgroundColor: plano.statusPlano === 'ATIVO' ? '#dcfce7' : '#e5e7eb',
-                                        color: plano.statusPlano === 'ATIVO' ? '#16a34a' : '#374151',
-                                        padding: '3px 12px', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 600
-                                    }}>
-                                        {plano.statusPlano}
-                                    </span>
-                                </td>
-                                <td style={{ ...tdStyle, textAlign: 'center' }}>
-                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bfdbfe', backgroundColor: '#eff6ff', color: '#3b82f6', fontSize: '0.8rem', cursor: 'pointer' }}>Detalhes</button>
-                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bbf7d0', backgroundColor: '#f0fdf4', color: '#16a34a', fontSize: '0.8rem', cursor: 'pointer' }}>Atualizar</button>
-                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #fecaca', backgroundColor: '#fff1f2', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer' }}>Deletar</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        )) : (
+                        {planosPagina.length > 0 ? planosPagina.map((plano, index) => {
+                            const planoId = plano.id_plano ?? plano.idPlano ?? plano.id ?? plano.cod_plano ?? plano.codPlano ?? plano.codigo;
+                            return (
+                                <tr key={planoId ?? index}
+                                    onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff8f5')}
+                                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}>
+                                    <td style={tdStyle}>{plano.codPlano}</td>
+                                    <td style={tdStyle}>{plano.tipoPlano}</td>
+                                    <td style={{ ...tdStyle, fontWeight: 700 }}>
+                                        R$ {Number(plano.valor).toFixed(2)}
+                                    </td>
+                                    <td style={tdStyle}>
+                                        <span style={{
+                                            backgroundColor: plano.statusPlano === 'ATIVO' ? '#dcfce7' : '#e5e7eb',
+                                            color: plano.statusPlano === 'ATIVO' ? '#16a34a' : '#374151',
+                                            padding: '3px 12px', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 600
+                                        }}>
+                                            {plano.statusPlano}
+                                        </span>
+                                    </td>
+                                    <td style={{ ...tdStyle, textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                            <button
+                                                onClick={() => {
+                                                    if (!planoId) {
+                                                        alert('ID do plano não encontrado.');
+                                                        return;
+                                                    }
+                                                    navigate(`/detalhes/plano/${planoId}`);
+                                                }}
+                                                style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bfdbfe', backgroundColor: '#eff6ff', color: '#3b82f6', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                                Detalhes
+                                            </button>
+                                            <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bbf7d0', backgroundColor: '#f0fdf4', color: '#16a34a', fontSize: '0.8rem', cursor: 'pointer' }}>Atualizar</button>
+                                            <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #fecaca', backgroundColor: '#fff1f2', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer' }}>Deletar</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        }) : (
                             <tr>
                                 <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
                                     Nenhum plano encontrado

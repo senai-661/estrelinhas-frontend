@@ -194,14 +194,17 @@ function Navegacao(): JSX.Element {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '0 28px',
+                padding: '0',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
                 position: 'sticky',
                 top: 0,
-                zIndex: 50
+                zIndex: 50,
+                width: '100%'
             }}>
-                <Menubar model={items} start={start} />
-                {userActions}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingLeft: '28px', paddingRight: '28px' }}>
+                    <Menubar model={items} start={start} />
+                    {userActions}
+                </div>
             </header>
         </>
     );

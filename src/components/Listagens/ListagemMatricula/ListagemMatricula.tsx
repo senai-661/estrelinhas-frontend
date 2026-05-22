@@ -1,11 +1,15 @@
 import { type JSX, useEffect, useState } from "react";
 import MatriculaRequests from "../../../fetch/MatriculaRequests";
 import AuthRequests from "../../../fetch/AuthRequests";
+import { useNavigate } from "react-router-dom";
+import type MatriculaDTO from "../../../dto/MatriculaDTO";
 
 function ListagemMatriculas(): JSX.Element {
-    const [matriculas, setMatriculas] = useState<any[]>([]);
+    const [matriculas, setMatriculas] = useState<MatriculaDTO[]>([]);
     const [pagina, setPagina] = useState(1);
+    const [carregando, setCarregando] = useState(true);
     const itensPorPagina = 6;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const buscarMatriculas = async () => {
@@ -13,12 +17,16 @@ function ListagemMatriculas(): JSX.Element {
                 const token = localStorage.getItem('token');
                 const isAuth = localStorage.getItem('isAuth');
                 if (!token || !isAuth || !AuthRequests.checkTokenExpiry()) return;
-                const lista = await MatriculaRequests.obterListaDeMatriculas();
-                setMatriculas(Array.isArray(lista) ? lista : []);
+
+                const lista: MatriculaDTO[] = await MatriculaRequests.obterListaDeMatriculas();
+                if (!Array.isArray(lista)) { setMatriculas([]); return; }
+
+                setMatriculas(lista);
             } catch (error) {
                 console.error(`Erro ao buscar matrículas:`, error);
-                alert(`Erro ao carregar matrículas: ${error}`);
                 setMatriculas([]);
+            } finally {
+                setCarregando(false);
             }
         };
         buscarMatriculas();
@@ -27,8 +35,36 @@ function ListagemMatriculas(): JSX.Element {
     const totalPaginas = Math.ceil(matriculas.length / itensPorPagina);
     const matriculasPagina = matriculas.slice((pagina - 1) * itensPorPagina, pagina * itensPorPagina);
 
+    const formatarData = (data: Date | string | undefined) => {
+        if (!data) return '—';
+        try {
+            return new Date(data).toLocaleDateString('pt-BR');
+        } catch {
+            return '—';
+        }
+    };
+
+    const getDadosMatricula = (matricula: MatriculaDTO) => {
+        const raw = matricula as any;
+        const aluno = (matricula.aluno ?? raw.aluno ?? raw.student ?? raw.alunoMatricula ?? raw.aluno_matricula) as any;
+
+        return {
+            id: matricula.id_matricula ?? raw.idMatricula ?? raw.id ?? raw.id_aluno ?? '—',
+            nome: aluno?.nome ?? aluno?.nome_aluno ?? aluno?.nomeAluno ?? aluno?.firstName ?? aluno?.first_name ?? raw.aluno_nome ?? raw.nome_aluno ?? raw.nome ?? '—',
+            sobrenome: aluno?.sobrenome ?? aluno?.sobrenome_aluno ?? aluno?.sobrenomeAluno ?? aluno?.lastName ?? aluno?.last_name ?? raw.aluno_sobrenome ?? raw.sobrenome_aluno ?? raw.sobrenome ?? '—',
+            dataInicio: matricula.data_inicio ?? raw.dataInicio ?? raw.dataMatricula ?? raw.data_matricula ?? raw.data_inicio,
+            dataFim: matricula.data_fim ?? raw.dataFim ?? raw.dataVencimento ?? raw.data_vencimento ?? raw.data_fim,
+            valorFinal: matricula.valor_final ?? raw.valorFinal ?? raw.valorPago ?? raw.valor_pago ?? raw.valor_final,
+            formaPagamento: matricula.forma_pagamento ?? raw.formaPagamento ?? raw.forma_pagamento ?? '—',
+            status: matricula.status_matricula ?? raw.statusMatricula ?? raw.status_matricula ?? '—'
+        };
+    };
+
     const tdStyle = { padding: '14px 16px', borderBottom: '1px solid #f0f0f0', fontSize: '0.9rem', color: '#333' };
-    const thStyle = { padding: '12px 16px', textAlign: 'left' as const, fontSize: '0.78rem', color: '#888', fontWeight: 600, textTransform: 'uppercase' as const, backgroundColor: '#fafafa' };
+    const thStyle = {
+        padding: '12px 16px', textAlign: 'left' as const, fontSize: '0.78rem',
+        color: '#888', fontWeight: 600, textTransform: 'uppercase' as const, backgroundColor: '#fafafa'
+    };
 
     return (
         <main style={{ minHeight: '88vh', backgroundColor: '#fff', padding: '40px' }}>
@@ -47,6 +83,8 @@ function ListagemMatriculas(): JSX.Element {
                     <thead>
                         <tr>
                             <th style={thStyle}>ID</th>
+                            <th style={thStyle}>Nome</th>
+                            <th style={thStyle}>Sobrenome</th>
                             <th style={thStyle}>Vigência</th>
                             <th style={thStyle}>Valor Pago</th>
                             <th style={thStyle}>Forma Pgto.</th>
@@ -55,38 +93,79 @@ function ListagemMatriculas(): JSX.Element {
                         </tr>
                     </thead>
                     <tbody>
-                        {matriculasPagina.length > 0 ? matriculasPagina.map((matricula, index) => (
-                            <tr key={matricula.idMatricula ?? index}
-                                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff8f5')}
-                                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}>
-                                <td style={tdStyle}>{matricula.idMatricula}</td>
-                                <td style={tdStyle}>
-                                    {new Date(matricula.dataMatricula).toLocaleDateString('pt-BR')} → {new Date(matricula.dataVencimento).toLocaleDateString('pt-BR')}
-                                </td>
-                                <td style={{ ...tdStyle, fontWeight: 700 }}>
-                                    R$ {Number(matricula.valorPago).toFixed(2)}
-                                </td>
-                                <td style={tdStyle}>{matricula.formaPagamento}</td>
-                                <td style={tdStyle}>
-                                    <span style={{
-                                        backgroundColor: matricula.statusMatricula === 'ATIVA' ? '#dcfce7' : '#e5e7eb',
-                                        color: matricula.statusMatricula === 'ATIVA' ? '#16a34a' : '#374151',
-                                        padding: '3px 12px', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 600
-                                    }}>
-                                        {matricula.statusMatricula}
-                                    </span>
-                                </td>
-                                <td style={{ ...tdStyle, textAlign: 'center' }}>
-                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bfdbfe', backgroundColor: '#eff6ff', color: '#3b82f6', fontSize: '0.8rem', cursor: 'pointer' }}>Detalhes</button>
-                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bbf7d0', backgroundColor: '#f0fdf4', color: '#16a34a', fontSize: '0.8rem', cursor: 'pointer' }}>Atualizar</button>
-                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #fecaca', backgroundColor: '#fff1f2', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer' }}>Deletar</button>
-                                    </div>
+                        {carregando ? (
+                            <tr>
+                                <td colSpan={8} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+                                    Carregando matrículas...
                                 </td>
                             </tr>
-                        )) : (
+                        ) : matriculasPagina.length > 0 ? matriculasPagina.map((matricula, index) => {
+                            const {
+                                id,
+                                nome,
+                                sobrenome,
+                                dataInicio,
+                                dataFim,
+                                valorFinal,
+                                formaPagamento,
+                                status
+                            } = getDadosMatricula(matricula);
+
+                            return (
+                                <tr key={id ?? index}
+                                    onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff8f5')}
+                                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}>
+
+                                    <td style={tdStyle}>{id}</td>
+
+                                    <td style={{ ...tdStyle, fontWeight: 500 }}>
+                                        {nome}
+                                    </td>
+
+                                    <td style={{ ...tdStyle, fontWeight: 500 }}>
+                                        {sobrenome}
+                                    </td>
+
+                                    <td style={tdStyle}>
+                                        {formatarData(dataInicio)} → {formatarData(dataFim)}
+                                    </td>
+
+                                    <td style={{ ...tdStyle, fontWeight: 700 }}>
+                                        R$ {valorFinal != null && valorFinal !== '—' ? Number(valorFinal).toFixed(2) : '—'}
+                                    </td>
+
+                                    <td style={tdStyle}>{formaPagamento}</td>
+
+                                    <td style={tdStyle}>
+                                        <span style={{
+                                            backgroundColor: status === 'ATIVA' ? '#dcfce7' : '#e5e7eb',
+                                            color: status === 'ATIVA' ? '#16a34a' : '#374151',
+                                            padding: '3px 12px', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 600
+                                        }}>
+                                            {status}
+                                        </span>
+                                    </td>
+
+                                    <td style={{ ...tdStyle, textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                            <button
+                                                onClick={() => navigate(`/detalhes/matricula/${id}`)}
+                                                style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bfdbfe', backgroundColor: '#eff6ff', color: '#3b82f6', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                                Detalhes
+                                            </button>
+                                            <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bbf7d0', backgroundColor: '#f0fdf4', color: '#16a34a', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                                Atualizar
+                                            </button>
+                                            <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #fecaca', backgroundColor: '#fff1f2', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                                Deletar
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        }) : (
                             <tr>
-                                <td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+                                <td colSpan={8} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
                                     Nenhuma matrícula encontrada
                                 </td>
                             </tr>

@@ -1,3 +1,5 @@
+import PlanoDTO from "../dto/PlanoDTO";
+
 class PlanoRequests {
 
     private serverUrl: string;
@@ -6,6 +8,19 @@ class PlanoRequests {
     constructor() {
         this.serverUrl = 'http://localhost:3333';
         this.endpoint = '/api/planos';
+    }
+
+    private normalizePlano(raw: any): PlanoDTO & Record<string, any> {
+        return {
+            id_plano: raw?.id_plano ?? raw?.idPlano ?? raw?.id ?? raw?.cod_plano ?? raw?.codPlano ?? raw?.codigo,
+            cod_plano: raw?.cod_plano ?? raw?.codPlano ?? raw?.codigo ?? raw?.code,
+            tipo_plano: raw?.tipo_plano ?? raw?.tipoPlano ?? raw?.tipo ?? raw?.name,
+            duracao_dias: raw?.duracao_dias ?? raw?.duracaoDias ?? raw?.duracao ?? raw?.duracaoPlano ?? raw?.duration ?? raw?.days,
+            valor: raw?.valor ?? raw?.valor_plano ?? raw?.price ?? raw?.preco,
+            descricao: raw?.descricao ?? raw?.description ?? raw?.descriptionPlano ?? raw?.descricaoPlano ?? raw?.descricao_plano ?? "",
+            status_plano: raw?.status_plano ?? raw?.statusPlano ?? raw?.status ?? "",
+            ...raw
+        };
     }
 
     async getAll() {
@@ -22,7 +37,11 @@ class PlanoRequests {
                 throw new Error('Erro ao buscar planos');
             }
 
-            return await response.json();
+            const data = await response.json();
+            if (Array.isArray(data)) {
+                return data.map(item => this.normalizePlano(item));
+            }
+            return data;
 
         } catch (error) {
             console.error('Erro:', error);
@@ -30,7 +49,7 @@ class PlanoRequests {
         }
     }
 
-    async getById(id: number) {
+    async getById(id: string | number) {
         try {
             const response = await fetch(`${this.serverUrl}${this.endpoint}/${id}`, {
                 method: 'GET',
@@ -44,7 +63,8 @@ class PlanoRequests {
                 throw new Error('Plano não encontrado');
             }
 
-            return await response.json();
+            const data = await response.json();
+            return this.normalizePlano(data);
 
         } catch (error) {
             console.error('Erro:', error);
@@ -131,6 +151,27 @@ class PlanoRequests {
     async obterListaDePlanos() {
         return this.getAll();
     }
+
+    async obterPlanoPorId(id_plano: number): Promise<PlanoDTO | undefined> {
+    try {
+        const token = localStorage.getItem('token');
+        const respostaAPI = await fetch(`${this.serverUrl}${this.endpoint}/${id_plano}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': `${token}`
+            }
+        });
+        if (respostaAPI.ok) {
+            const plano: PlanoDTO = await respostaAPI.json();
+            return plano;
+        } else {
+            throw new Error("Não foi possível buscar o plano.");
+        }
+    } catch (error) {
+        console.error(`Erro ao fazer a consulta de plano por ID. ${error}`);
+        return;
+    }
+}
 }
 
 export default new PlanoRequests();
