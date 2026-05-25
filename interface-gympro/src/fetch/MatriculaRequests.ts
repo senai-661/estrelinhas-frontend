@@ -1,44 +1,55 @@
-import type { MatriculaDTO } from "../dto/MatriculaDTO";
+class MatriculaRequests {
+    private serverURL;
+    private endpointMatricula;
 
-const BASE_URL = "http://localhost:3333";
-const ENDPOINT = "/api/matriculas";
+    constructor() {
+        this.serverURL = `http://localhost:3333`;
+        this.endpointMatricula = `/api/matriculas`;
+    }
 
-const MatriculaRequests = {
-    obterListaDeMatriculas: async (): Promise<MatriculaDTO[]> => {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${BASE_URL}${ENDPOINT}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "x-access-token": `${token}`,  
-            },
-        });
+    async obterListaDeMatriculas() {
+        try {
+            const token = localStorage.getItem('token');
+            const respostaAPI = await fetch(`${this.serverURL}${this.endpointMatricula}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${token}`
+                }
+            });
 
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar matrículas: ${response.statusText}`);
+            if (respostaAPI.ok) {
+                const dados = await respostaAPI.json();
+                return dados;
+            } else {
+                throw new Error("Não foi possível listar as matrículas.");
+            }
+        } catch (error) {
+            console.error(`Erro ao fazer a consulta de matrículas. ${error}`);
+            return [];
         }
+    }
 
-        return response.json();
-    },
+    async obterMatriculaPorId(idMatricula: number) {
+        try {
+            const token = localStorage.getItem('token');
+            const respostaAPI = await fetch(`${this.serverURL}${this.endpointMatricula}/${idMatricula}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${token}`
+                }
+            });
 
-    obterMatriculaPorCodigo: async (cod_matricula: string): Promise<MatriculaDTO | null> => {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${BASE_URL}${ENDPOINT}/${cod_matricula}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "x-access-token": `${token}`, 
-            },
-        });
-
-        if (response.status === 404) return null;
-
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar matrícula: ${response.statusText}`);
+            if (respostaAPI.ok) {
+                const dados = await respostaAPI.json();
+                return dados;
+            } else {
+                throw new Error("Não foi possível buscar a matrícula.");
+            }
+        } catch (error) {
+            console.error(`Erro ao fazer a consulta de matrícula por ID. ${error}`);
+            return null;
         }
+    }
+}
 
-        return response.json();
-    },
-};
-
-export default MatriculaRequests;
+export default new MatriculaRequests;

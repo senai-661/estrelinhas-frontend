@@ -21,24 +21,24 @@ const PlanoRequests = {
         return response.json();
     },
 
-    obterPlanoPorCodigo: async (cod_plano: string): Promise<PlanoDTO | null> => {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${BASE_URL}${ENDPOINT}/${cod_plano}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "x-access-token": `${token}`,
-            },
-        });
+   obterPlanoPorId: async (cod_plano: string): Promise<any | null> => {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${BASE_URL}${ENDPOINT}/${cod_plano}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": `${token}`,
+        },
+    });
 
-        if (response.status === 404) return null;
+    if (response.status === 404) return null;
 
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar plano: ${response.statusText}`);
-        }
+    if (!response.ok) {
+        throw new Error(`Erro ao buscar plano: ${response.statusText}`);
+    }
 
-        return response.json();
-    },
+    return response.json();
+},
 };
 
 export default PlanoRequests;

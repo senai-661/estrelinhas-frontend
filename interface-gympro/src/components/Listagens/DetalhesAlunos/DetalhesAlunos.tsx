@@ -41,16 +41,15 @@ function DetalhesAluno({ id_aluno }: DetalhesAlunoProps): JSX.Element {
         buscarDados();
     }, [id_aluno]);
 
-    // Loading skeleton
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-start justify-center py-10 px-4">
-                <div className="w-full max-w-5xl animate-pulse">
-                    <div className="flex flex-col md:flex-row gap-6">
-                        <div className="w-full md:w-64 bg-white rounded-2xl h-80 flex-shrink-0" />
-                        <div className="flex-1 flex flex-col gap-4">
-                            <div className="bg-white rounded-2xl h-44" />
-                            <div className="bg-white rounded-2xl h-44" />
+            <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 16px" }}>
+                <div style={{ width: "100%", maxWidth: "900px" }}>
+                    <div style={{ display: "flex", gap: "24px" }}>
+                        <div style={{ width: "256px", backgroundColor: "#ffffff", borderRadius: "16px", height: "320px", flexShrink: 0 }} />
+                        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px" }}>
+                            <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", height: "176px" }} />
+                            <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", height: "176px" }} />
                         </div>
                     </div>
                 </div>
@@ -58,19 +57,15 @@ function DetalhesAluno({ id_aluno }: DetalhesAlunoProps): JSX.Element {
         );
     }
 
-    // Error state
     if (error || !aluno) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-                <div className="bg-white rounded-2xl border border-red-100 p-10 max-w-md w-full text-center shadow-sm">
-                    <div className="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center mx-auto mb-4">
-                        <i className="pi pi-exclamation-triangle text-orange-500 text-2xl" />
-                    </div>
-                    <h2 className="text-lg font-bold text-gray-900 mb-2">Erro ao carregar aluno</h2>
-                    <p className="text-sm text-gray-400 mb-6">{error || "Erro desconhecido."}</p>
+            <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
+                <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "40px", maxWidth: "400px", width: "100%", textAlign: "center" }}>
+                    <h2 style={{ fontSize: "1.1rem", fontWeight: "bold", color: "#000000", marginBottom: "8px" }}>Erro ao carregar aluno</h2>
+                    <p style={{ fontSize: "0.875rem", color: "#999999", marginBottom: "24px" }}>{error || "Erro desconhecido."}</p>
                     <button
                         onClick={() => navigate("/lista/alunos")}
-                        className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white text-sm font-bold rounded-xl transition-all"
+                        style={{ padding: "10px 24px", backgroundColor: "#ff7300", color: "#ffffff", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer", fontSize: "0.875rem" }}
                     >
                         Voltar para a lista
                     </button>
@@ -92,100 +87,83 @@ function DetalhesAluno({ id_aluno }: DetalhesAlunoProps): JSX.Element {
     const iniciais = `${aluno.nome?.charAt(0) ?? ""}${aluno.sobrenome?.charAt(0) ?? ""}`.toUpperCase();
 
     return (
-        <div className="min-h-screen bg-gray-100 py-8 px-4">
-            <div className="w-full max-w-5xl mx-auto">
+        <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", padding: "32px 16px" }}>
+            <div style={{ width: "100%", maxWidth: "900px", margin: "0 auto" }}>
 
-                {/* Breadcrumb */}
-                <div className="flex items-center gap-2 text-sm mb-6">
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.875rem", marginBottom: "24px" }}>
                     <button
                         onClick={() => navigate("/lista/alunos")}
-                        className="text-orange-500 hover:text-orange-600 font-semibold transition-colors"
+                        style={{ color: "#ff7300", fontWeight: "600", background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem" }}
                     >
                         Alunos
                     </button>
-                    <span className="text-gray-400">/</span>
-                    <span className="text-gray-500 font-medium">{aluno.nome} {aluno.sobrenome}</span>
+                    <span style={{ color: "#999999" }}>/</span>
+                    <span style={{ color: "#666666", fontWeight: "500" }}>{aluno.nome} {aluno.sobrenome}</span>
                 </div>
 
-                {/* Layout principal */}
-                <div className="flex flex-col md:flex-row gap-6">
+                <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
 
-                    {/* Sidebar — Perfil */}
-                    <div className="w-full md:w-64 flex-shrink-0 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center gap-4">
-                        {/* Avatar */}
-                        <div className="w-20 h-20 rounded-full bg-orange-500 flex items-center justify-center text-white text-2xl font-bold shadow-md">
+                    <div style={{ width: "256px", flexShrink: 0, backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #f0f0f0", padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+                        <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#ff7300", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff", fontSize: "1.5rem", fontWeight: "bold" }}>
                             {iniciais}
                         </div>
 
-                        {/* Nome */}
-                        <div className="text-center">
-                            <h2 className="text-base font-bold text-gray-900">{aluno.nome} {aluno.sobrenome}</h2>
-                            <p className="text-xs text-gray-400 mt-0.5">RA: <span className="font-mono text-orange-500">{aluno.cod_aluno ?? "—"}</span></p>
+                        <div style={{ textAlign: "center" }}>
+                            <h2 style={{ fontSize: "1rem", fontWeight: "bold", color: "#000000", margin: 0 }}>{aluno.nome} {aluno.sobrenome}</h2>
                         </div>
 
-                        {/* Badge status */}
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-                            aluno.statusAluno
-                                ? "bg-green-50 text-green-700"
-                                : "bg-red-50 text-red-600"
-                        }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${aluno.statusAluno ? "bg-green-500" : "bg-red-400"}`} />
-                            {aluno.statusAluno ? "Ativo" : "Inativo"}
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "4px 12px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: "600", backgroundColor: aluno.statusAluno === "ATIVO" ? "#f0fdf4" : "#fef2f2", color: aluno.statusAluno === "ATIVO" ? "#15803d" : "#b91c1c" }}>
+                            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: aluno.statusAluno === "ATIVO" ? "#22c55e" : "#ef4444" }} />
+                            {aluno.statusAluno === "ATIVO" ? "Ativo" : "Inativo"}
                         </span>
 
-                        <div className="w-full border-t border-gray-100 mt-2" />
+                        <div style={{ width: "100%", borderTop: "1px solid #f0f0f0", marginTop: "8px" }} />
 
-                        {/* Botões */}
-                        <div className="w-full flex flex-col gap-2">
+                        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
                             <button
                                 onClick={() => navigate(`/atualizar/aluno/${aluno.idAluno}`)}
-                                className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 text-white text-sm font-bold py-2.5 rounded-xl transition-all shadow-sm"
+                                style={{ width: "100%", backgroundColor: "#ff7300", color: "#ffffff", border: "none", borderRadius: "10px", padding: "10px", fontWeight: "bold", cursor: "pointer", fontSize: "0.875rem" }}
                             >
-                                <i className="pi pi-pencil mr-2" />
                                 Editar Aluno
                             </button>
                             <button
                                 onClick={() => navigate("/lista/alunos")}
-                                className="w-full bg-white hover:bg-gray-50 active:scale-95 text-gray-700 text-sm font-bold py-2.5 rounded-xl border border-gray-200 transition-all"
+                                style={{ width: "100%", backgroundColor: "#ffffff", color: "#000000", border: "1px solid #e0e0e0", borderRadius: "10px", padding: "10px", fontWeight: "bold", cursor: "pointer", fontSize: "0.875rem" }}
                             >
-                                <i className="pi pi-arrow-left mr-2" />
                                 Voltar
                             </button>
                         </div>
                     </div>
 
-                    {/* Cards de informação */}
-                    <div className="flex-1 flex flex-col gap-4">
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px", minWidth: "280px" }}>
 
-                        {/* Card — Dados Cadastrais */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                            <div className="flex items-center gap-2 mb-5">
-                                <div className="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center">
-                                    <i className="pi pi-id-card text-white text-xs" />
+                        <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #f0f0f0", padding: "24px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+                                <div style={{ width: "28px", height: "28px", borderRadius: "8px", backgroundColor: "#ff7300", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <i className="pi pi-id-card" style={{ color: "#ffffff", fontSize: "0.75rem" }} />
                                 </div>
-                                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Dados Cadastrais</h3>
+                                <h3 style={{ fontSize: "0.875rem", fontWeight: "bold", color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Dados Cadastrais</h3>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                                 <Campo label="ID do Sistema" valor={String(aluno.idAluno ?? "—")} icone="pi-hashtag" />
-                                <Campo label="Código do Aluno (RA)" valor={aluno.cod_aluno ?? "—"} icone="pi-bookmark" destaque />
                                 <Campo label="CPF" valor={aluno.cpf ?? "Não informado"} icone="pi-file" />
                                 <Campo label="Data de Nascimento" valor={formatarData(aluno.dataNascimento)} icone="pi-calendar" />
                             </div>
                         </div>
 
-                        {/* Card — Contato e Localização */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                            <div className="flex items-center gap-2 mb-5">
-                                <div className="w-7 h-7 rounded-lg bg-black flex items-center justify-center">
+                        <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #f0f0f0", padding: "24px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+                                <div style={{ width: "28px", height: "28px", borderRadius: "8px", backgroundColor: "#ff7300", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <i className="pi pi-map-marker" style={{ color: "#ffffff", fontSize: "0.75rem" }} />
                                 </div>
-                                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Contato e Localização</h3>
+                                <h3 style={{ fontSize: "0.875rem", fontWeight: "bold", color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Contato e Localização</h3>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                                 <Campo label="E-mail" valor={aluno.email ?? "Não informado"} icone="pi-envelope" />
                                 <Campo label="Celular / Telefone" valor={aluno.celular ?? "Não informado"} icone="pi-phone" />
-                                <div className="sm:col-span-2">
+                                <div style={{ gridColumn: "1 / -1" }}>
                                     <Campo label="Endereço Residencial" valor={aluno.endereco ?? "Não informado"} icone="pi-home" />
                                 </div>
                             </div>
@@ -198,25 +176,21 @@ function DetalhesAluno({ id_aluno }: DetalhesAlunoProps): JSX.Element {
     );
 }
 
-// Componente auxiliar de campo
 interface CampoProps {
     label: string;
     valor: string;
     icone: string;
-    destaque?: boolean;
 }
 
-function Campo({ label, valor, icone, destaque = false }: CampoProps) {
+function Campo({ label, valor, icone }: CampoProps) {
     return (
-        <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition-colors group">
-            <div className="w-8 h-8 rounded-lg bg-white border border-gray-100 group-hover:border-orange-200 flex items-center justify-center flex-shrink-0 shadow-sm transition-colors">
-                <i className={`pi ${icone} text-orange-400 text-sm`} />
+        <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", padding: "12px", borderRadius: "10px", backgroundColor: "#f9f9f9" }}>
+            <div style={{ width: "32px", height: "32px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <i className={`pi ${icone}`} style={{ color: "#ff7300", fontSize: "0.875rem" }} />
             </div>
-            <div className="flex flex-col min-w-0">
-                <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">{label}</span>
-                <span className={`text-sm font-semibold truncate mt-0.5 ${destaque ? "text-orange-500 font-mono" : "text-gray-800"}`}>
-                    {valor}
-                </span>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ fontSize: "0.7rem", color: "#999999", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</span>
+                <span style={{ fontSize: "0.875rem", fontWeight: "600", color: "#000000", marginTop: "2px" }}>{valor}</span>
             </div>
         </div>
     );
