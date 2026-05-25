@@ -21,38 +21,37 @@ class AuthRequests {
      * @param login - email e senha
      * @returns true caso sucesso, false caso erro
      */
-    async login(login: { email: string, senha: string }) {       
-        try {
-            const response = await fetch(`${this.serverUrl}${this.endpointLogin}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(login)
-            });
+   async login(login: { email: string, senha: string }) {       
+    try {
+        const response = await fetch(`${this.serverUrl}${this.endpointLogin}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(login)
+        });
 
-            // erro na requisição
-            if (!response.ok) {
-                throw new Error('Erro na requisição');
-            }
-
-            const data = await response.json();
-
-            // se auth for false
-            if (!data.auth) {
-                throw new Error(data.message || 'Email ou senha incorretos');
-            }
-
-            // salva os dados do usuário
-            this.persistToken(data.token, data.usuario, data.auth);
-
-            return data.auth;
-
-        } catch (error) {
-            console.error('Erro: ', error);
-            throw error;
+        if (!response.ok) {
+            throw new Error('Erro na requisição');
         }
+
+        const data = await response.json();
+
+        if (!data.auth) {
+            throw new Error(data.message || 'Email ou senha incorretos');
+        }
+
+        console.log('Dados do usuário:', data.usuario); 
+                                                                            
+        this.persistToken(data.token, data.usuario, data.auth);
+
+        return data.auth;
+
+    } catch (error) {
+        console.error('Erro: ', error);
+        throw error;
     }
+}
 
     /**
      * Persiste o token no localStorage

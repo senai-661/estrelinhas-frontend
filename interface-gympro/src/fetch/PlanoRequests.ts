@@ -1,43 +1,44 @@
-class PlanoRequests {
-    private serverURL;
-    private endpointPlano;
+import type { PlanoDTO } from "../dto/PlanoDTO";
 
-    constructor() {
-        this.serverURL = `http://localhost:3333`;
-        this.endpointPlano = `/api/planos`;
-    }
+const BASE_URL = "http://localhost:3333";
+const ENDPOINT = "/api/planos";
 
-    async obterListaDePlanos() {
-        try {
-            const token = localStorage.getItem('token');
+const PlanoRequests = {
+    obterListaDePlanos: async (): Promise<PlanoDTO[]> => {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${BASE_URL}${ENDPOINT}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": `${token}`,
+            },
+        });
 
-            const respostaAPI = await fetch(`${this.serverURL}${this.endpointPlano}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': `${token}`
-                }
-            });
-
-            if (respostaAPI.ok) {
-                const dados = await respostaAPI.json();
-
-    
-                return dados.map((item: any) => ({
-                    cod_plano: item.codPlano,
-                    tipo_plano: item.tipoPlano,
-                    duracao_dias: item.duracaoDias,
-                    valor: Number(item.valor),
-                    descricao: item.descricao,
-                    status_plano: item.statusPlano
-                }));
-            } else {
-                throw new Error("Não foi possível listar os planos.");
-            }
-        } catch (error) {
-            console.error(`Erro ao fazer a consulta de planos. ${error}`);
-            return [];
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar planos: ${response.statusText}`);
         }
-    }
-}
 
-export default new PlanoRequests;
+        return response.json();
+    },
+
+    obterPlanoPorCodigo: async (cod_plano: string): Promise<PlanoDTO | null> => {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${BASE_URL}${ENDPOINT}/${cod_plano}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": `${token}`,
+            },
+        });
+
+        if (response.status === 404) return null;
+
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar plano: ${response.statusText}`);
+        }
+
+        return response.json();
+    },
+};
+
+export default PlanoRequests;

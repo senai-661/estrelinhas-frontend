@@ -1,25 +1,43 @@
 import { type JSX } from "react";
+import { useNavigate } from "react-router-dom";
 
 function BoasVindas(): JSX.Element {
+    const navigate = useNavigate();
+
     return (
-        <main style={{ backgroundColor: '#F0F2F5', minHeight: 'calc(100vh - 64px)', display: 'flex', flexDirection: 'column', 
-        justifyContent: 'center', alignItems: 'center', padding: '4rem 2rem', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '3.5rem', fontWeight: '800', lineHeight: '1.1', color: '#111', margin: '0 0 1.5rem' }}>
-                TRANSFORME SEU{' '}
-                <span style={{ color: '#F97316' }}>CORPO</span>
-                {' '}E{' '}
-                <span style={{ color: '#F97316' }}>MENTE</span>
-            </h1>
-
-            <p style={{ fontSize: '1.1rem', color: '#444', maxWidth: '600px', lineHeight: '1.7', margin: '0 0 2.5rem' }}>
-                A melhor academia da cidade está esperando por você. Equipamentos de última geração,
-                professores qualificados e um ambiente motivador.
-            </p>
-
-            <button style={{ backgroundColor: '#F97316', color: 'white', border: 'none', borderRadius: '8px', 
-                padding: '14px 36px', fontSize: '1rem', fontWeight: '700', cursor: 'pointer' }}>
-                Comece agora
-            </button>
+        <main style={{
+            minHeight: '88vh',
+            backgroundColor: '#f5f5f5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '40px 20px'
+        }}>
+            <div>
+                <h1 style={{ fontSize: '3.5rem', fontWeight: 900, marginBottom: '16px', color: '#111' }}>
+                    TRANSFORME SEU <span style={{ color: '#f97316' }}>CORPO</span> E <span style={{ color: '#f97316' }}>MENTE</span>
+                </h1>
+                <p style={{ fontSize: '1rem', color: '#555', maxWidth: '500px', margin: '0 auto 32px', lineHeight: 1.7 }}>
+                    A melhor academia da cidade está esperando por você.
+                    Equipamentos de última geração, professores qualificados e um ambiente motivador.
+                </p>
+                <button
+                    onClick={() => navigate('/login')}
+                    style={{
+                        backgroundColor: '#f97316',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '14px 36px',
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                    }}
+                >
+                    Comece agora
+                </button>
+            </div>
         </main>
     );
 }

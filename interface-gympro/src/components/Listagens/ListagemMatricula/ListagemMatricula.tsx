@@ -1,150 +1,120 @@
 import { useState, useEffect, type JSX } from "react";
 import MatriculaRequests from "../../../fetch/MatriculaRequests";
-import type { MatriculaDTO } from "../../../dto/MatriculaDTO";
+import AuthRequests from "../../../fetch/AuthRequests";
+import { useNavigate } from "react-router-dom";
 
 function ListagemMatriculas(): JSX.Element {
-    const [matriculas, setMatriculas] = useState<MatriculaDTO[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 5;
+    const [matriculas, setMatriculas] = useState<any[]>([]);
+    const [pagina, setPagina] = useState(1);
+    const itensPorPagina = 6;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const buscarMatriculas = async () => {
             try {
+                const token = localStorage.getItem('token');
+                const isAuth = localStorage.getItem('isAuth');
+                if (!token || !isAuth || !AuthRequests.checkTokenExpiry()) return;
                 const lista = await MatriculaRequests.obterListaDeMatriculas();
-                setMatriculas(lista ?? []);
+                setMatriculas(Array.isArray(lista) ? lista : []);
             } catch (error) {
-                console.error(`Erro ao buscar matrículas. ${error}`);
-                alert("Erro ao criar a listagem de matrículas.");
+                console.error(`Erro ao buscar matrículas:`, error);
+                alert(`Erro ao carregar matrículas: ${error}`);
+                setMatriculas([]);
             }
-        }
+        };
         buscarMatriculas();
     }, []);
 
-    const totalPages = Math.ceil(matriculas.length / rowsPerPage);
-    const indexOfLastRow = currentPage * rowsPerPage;
-    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentMatriculas = matriculas.slice(indexOfFirstRow, indexOfLastRow);
+    const totalPaginas = Math.ceil(matriculas.length / itensPorPagina);
+    const matriculasPagina = matriculas.slice((pagina - 1) * itensPorPagina, pagina * itensPorPagina);
 
-    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-    const formatarData = (data: string | Date): string => {
-        return new Date(data).toLocaleDateString("pt-BR");
-    };
-
-    const formatarValor = (valor: number): string => {
-        return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-    };
+    const tdStyle = { padding: '14px 16px', borderBottom: '1px solid #f0f0f0', fontSize: '0.9rem', color: '#333' };
+    const thStyle = { padding: '12px 16px', textAlign: 'left' as const, fontSize: '0.78rem', color: '#888', fontWeight: 600, textTransform: 'uppercase' as const, backgroundColor: '#fafafa' };
 
     return (
-        <main style={{ backgroundColor: "#f0f2f5", flex: 1, display: "flex", flexDirection: "column", padding: "24px 40px", overflow: "hidden" }}>
-            <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", gap: "16px", marginBottom: "32px" }}>
-                <h1 style={{ flex: 1, fontSize: "1.8rem", fontWeight: "bold", color: "#000000" }}>Matrículas</h1>
-                <a href="/cadastro/matricula" style={{ padding: "10px 24px", backgroundColor: "#ff7300", borderRadius: "6px", color: "#ffffff", fontWeight: "bold", textDecoration: "none" }}>
-                    Nova Matrícula
-                </a>
+        <main style={{ minHeight: '88vh', backgroundColor: '#fff', padding: '40px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <h1 style={{ fontSize: '1.6rem', fontWeight: 700, margin: 0 }}>Matrículas</h1>
+                <button style={{
+                    backgroundColor: '#f97316', color: 'white', border: 'none',
+                    borderRadius: '8px', padding: '10px 20px', fontWeight: 600, cursor: 'pointer'
+                }}>
+                    + Nova Matrícula
+                </button>
             </div>
 
-            <input
-                type="text"
-                name="busca-matricula"
-                id="busca-matricula"
-                placeholder="Buscar matrícula"
-                style={{ width: "100%", maxWidth: "1200px", margin: "0 auto 16px auto", padding: "10px 12px", borderBottom: "2px solid #ff7300", borderTop: "none", borderLeft: "none", borderRight: "none", borderRadius: "2px", fontSize: "1rem", outline: "none", boxSizing: "border-box" }}
-            />
-
-            <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto", flex: 1, display: "flex", flexDirection: "column", backgroundColor: "#ffffff", borderRadius: "12px", boxShadow: "0px 4px 12px rgba(0,0,0,0.1)", border: "1px solid #e0e0e0", overflow: "hidden" }}>
-                <div style={{ flex: 1, overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
-                        <thead>
-                            <tr style={{ backgroundColor: "#ff7300" }}>
-                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "left", borderBottom: "1px solid #e06600" }}>Cód. Matrícula</th>
-                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "center", borderBottom: "1px solid #e06600" }}>Vigência</th>
-                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "center", borderBottom: "1px solid #e06600" }}>Valor Final</th>
-                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "center", borderBottom: "1px solid #e06600" }}>Forma Pgto.</th>
-                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "center", borderBottom: "1px solid #e06600" }}>Status</th>
-                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "center", borderBottom: "1px solid #e06600" }}>Ações</th>
+            <div style={{ border: '1px solid #f0f0f0', borderRadius: '12px', overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr>
+                            <th style={thStyle}>ID</th>
+                            <th style={thStyle}>Vigência</th>
+                            <th style={thStyle}>Valor Pago</th>
+                            <th style={thStyle}>Forma Pgto.</th>
+                            <th style={thStyle}>Status</th>
+                            <th style={{ ...thStyle, textAlign: 'center' }}>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {matriculasPagina.length > 0 ? matriculasPagina.map((matricula, index) => (
+                            <tr key={matricula.idMatricula ?? index}
+                                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff8f5')}
+                                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}>
+                                <td style={tdStyle}>{matricula.idMatricula}</td>
+                                <td style={tdStyle}>
+                                    {new Date(matricula.dataMatricula).toLocaleDateString('pt-BR')} → {new Date(matricula.dataVencimento).toLocaleDateString('pt-BR')}
+                                </td>
+                                <td style={{ ...tdStyle, fontWeight: 700 }}>
+                                    R$ {Number(matricula.valorPago).toFixed(2)}
+                                </td>
+                                <td style={tdStyle}>{matricula.formaPagamento}</td>
+                                <td style={tdStyle}>
+                                    <span style={{
+                                        backgroundColor: matricula.statusMatricula === 'ATIVA' ? '#dcfce7' : '#e5e7eb',
+                                        color: matricula.statusMatricula === 'ATIVA' ? '#16a34a' : '#374151',
+                                        padding: '3px 12px', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 600
+                                    }}>
+                                        {matricula.statusMatricula}
+                                    </span>
+                                </td>
+                                <td style={{ ...tdStyle, textAlign: 'center' }}>
+                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                        <button
+                                            onClick={() => navigate(`/detalhes/matricula/${matricula.idMatricula}`)}
+                                            style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bfdbfe', backgroundColor: '#eff6ff', color: '#3b82f6', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                            Detalhes
+                                        </button>
+                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #bbf7d0', backgroundColor: '#f0fdf4', color: '#16a34a', fontSize: '0.8rem', cursor: 'pointer' }}>Atualizar</button>
+                                        <button style={{ padding: '5px 12px', borderRadius: '6px', border: '1px solid #fecaca', backgroundColor: '#fff1f2', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer' }}>Deletar</button>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {currentMatriculas && currentMatriculas.length > 0 ? (
-                                currentMatriculas.map((matricula, index) => (
-                                    <tr key={index} style={{ borderBottom: "1px solid #e0e0e0" }}>
-                                        <td style={{ padding: "12px 16px", color: "#000000", fontWeight: 600 }}>{matricula.cod_matricula}</td>
-                                        <td style={{ padding: "12px 16px", color: "#000000", textAlign: "center" }}>{formatarData(matricula.data_inicio)} → {formatarData(matricula.data_fim)}</td>
-                                        <td style={{ padding: "12px 16px", color: "#000000", textAlign: "center", fontWeight: 600 }}>{formatarValor(matricula.valor_final)}</td>
-                                        <td style={{ padding: "12px 16px", color: "#000000", textAlign: "center" }}>{matricula.forma_pagamento ?? "—"}</td>
-                                        <td style={{ padding: "12px 16px", textAlign: "center" }}>
-                                            <span style={{
-                                                padding: "4px 12px",
-                                                borderRadius: "999px",
-                                                fontSize: "12px",
-                                                fontWeight: 600,
-                                                color: "#ffffff",
-                                                backgroundColor:
-                                                    matricula.status_matricula === "ATIVA" ? "#22c55e" :
-                                                    matricula.status_matricula === "INATIVA" ? "#ef4444" :
-                                                    matricula.status_matricula === "PENDENTE" ? "#eab308" :
-                                                    "#6b7280"
-                                            }}>
-                                                {matricula.status_matricula}
-                                            </span>
-                                        </td>
-                                        <td style={{ padding: "12px 16px", textAlign: "center" }}>
-                                            <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                                                <button style={{ padding: "6px 12px", borderRadius: "6px", border: "none", backgroundColor: "#fff3e0", color: "#ff7300", fontWeight: 500, cursor: "pointer", fontSize: "0.85rem" }}>
-                                                    Detalhes
-                                                </button>
-                                                <button style={{ padding: "6px 12px", borderRadius: "6px", border: "none", backgroundColor: "#e0f2e9", color: "#15803d", fontWeight: 500, cursor: "pointer", fontSize: "0.85rem" }}>
-                                                    Atualizar
-                                                </button>
-                                                <button style={{ padding: "6px 12px", borderRadius: "6px", border: "none", backgroundColor: "#fee2e2", color: "#b91c1c", fontWeight: 500, cursor: "pointer", fontSize: "0.85rem" }}>
-                                                    Deletar
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} style={{ textAlign: "center", padding: "40px", color: "#999999", fontStyle: "italic" }}>
-                                        Nenhuma matrícula encontrada
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                        )) : (
+                            <tr>
+                                <td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+                                    Nenhuma matrícula encontrada
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
 
-                <div style={{ backgroundColor: "#f9f9f9", borderTop: "1px solid #e0e0e0", padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <p style={{ fontSize: "0.85rem", color: "#000000" }}>
-                        Mostrando <strong>{indexOfFirstRow + 1}</strong> até <strong>{Math.min(indexOfLastRow, matriculas.length)}</strong> de <strong>{matriculas.length}</strong> resultados
-                    </p>
-                    <div style={{ display: "flex", gap: "4px" }}>
-                        <button
-                            onClick={() => paginate(Math.max(1, currentPage - 1))}
-                            disabled={currentPage === 1}
-                            style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #e0e0e0", backgroundColor: "#ffffff", color: "#000000", cursor: currentPage === 1 ? "not-allowed" : "pointer", opacity: currentPage === 1 ? 0.5 : 1, fontSize: "0.85rem" }}
-                        >
-                            Anterior
-                        </button>
-                        {[...Array(totalPages)].map((_, i) => (
-                            <button
-                                key={i + 1}
-                                onClick={() => paginate(i + 1)}
-                                style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #e0e0e0", backgroundColor: currentPage === i + 1 ? "#ff7300" : "#ffffff", color: currentPage === i + 1 ? "#ffffff" : "#000000", cursor: "pointer", fontSize: "0.85rem", fontWeight: currentPage === i + 1 ? 600 : 400 }}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
-                        <button
-                            onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-                            disabled={currentPage === totalPages}
-                            style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #e0e0e0", backgroundColor: "#ffffff", color: "#000000", cursor: currentPage === totalPages ? "not-allowed" : "pointer", opacity: currentPage === totalPages ? 0.5 : 1, fontSize: "0.85rem" }}
-                        >
-                            Próximo
-                        </button>
-                    </div>
-                </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', marginTop: '20px' }}>
+                <button onClick={() => setPagina(p => Math.max(1, p - 1))} disabled={pagina === 1}
+                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #e0e0e0', background: '#fff', cursor: 'pointer' }}>{'<'}</button>
+                {Array.from({ length: totalPaginas }, (_, i) => (
+                    <button key={i + 1} onClick={() => setPagina(i + 1)}
+                        style={{
+                            padding: '6px 12px', borderRadius: '6px', border: '1px solid #e0e0e0',
+                            background: pagina === i + 1 ? '#f97316' : '#fff',
+                            color: pagina === i + 1 ? '#fff' : '#333',
+                            cursor: 'pointer', fontWeight: pagina === i + 1 ? 700 : 400
+                        }}>{i + 1}</button>
+                ))}
+                <button onClick={() => setPagina(p => Math.min(totalPaginas, p + 1))} disabled={pagina === totalPaginas}
+                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #e0e0e0', background: '#fff', cursor: 'pointer' }}>{'>'}</button>
             </div>
         </main>
     );
