@@ -2,13 +2,13 @@ import { type JSX } from "react";
 import { useState, useEffect } from "react";
 import AlunoRequest from '../../../fetch/AlunoRequests'
 import type { AlunoDTO } from '../../../dto/AlunoDTO'
-
-const ALUNOS_POR_PAGINA = 6;
+import { useNavigate } from "react-router-dom";
 
 function ListagemAlunos(): JSX.Element {
     const [alunos, setAlunos] = useState<AlunoDTO[]>([]);
-    const [busca, setBusca] = useState("");
-    const [paginaAtual, setPaginaAtual] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 5;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const buscarAlunos = async () => {
@@ -23,199 +23,110 @@ function ListagemAlunos(): JSX.Element {
         buscarAlunos();
     }, []);
 
-    const alunosFiltrados = alunos.filter((aluno) => {
-        const nomeCompleto = `${aluno.nome} ${aluno.sobrenome}`.toLowerCase();
-        return nomeCompleto.includes(busca.toLowerCase());
-    });
+    const totalPages = Math.ceil(alunos.length / rowsPerPage);
+    const indexOfLastRow = currentPage * rowsPerPage;
+    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+    const currentAlunos = alunos.slice(indexOfFirstRow, indexOfLastRow);
 
-    const totalPaginas = Math.ceil(alunosFiltrados.length / ALUNOS_POR_PAGINA);
-
-    const alunosPaginados = alunosFiltrados.slice(
-        (paginaAtual - 1) * ALUNOS_POR_PAGINA,
-        paginaAtual * ALUNOS_POR_PAGINA
-    );
-
-    const handleBusca = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setBusca(e.target.value);
-        setPaginaAtual(1);
-    };
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
-        <main style={{
-            minHeight: "76vh",
-            backgroundColor: "var(--bg)",
-            padding: "40px 16px",
-            fontFamily: "var(--sans)"
-        }}>
-            <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <main style={{ backgroundColor: "#f0f2f5", flex: 1, display: "flex", flexDirection: "column", padding: "24px 40px", overflow: "hidden" }}>
+            <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", gap: "16px", marginBottom: "32px" }}>
+                <h1 style={{ flex: 1, fontSize: "1.8rem", fontWeight: "bold", color: "#000000" }}>Alunos</h1>
+                <a href="/cadastro/aluno" style={{ padding: "10px 24px", backgroundColor: "#ff7300", borderRadius: "6px", color: "#ffffff", fontWeight: "bold", textDecoration: "none" }}>
+                    Novo Aluno
+                </a>
+            </div>
 
-                {/* Cabeçalho */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-                    <h1 style={{ fontSize: "24px", fontWeight: 600, margin: 0, color: "var(--text-h)" }}>
-                        Lista de Alunos
-                    </h1>
-                    <a
-                        href="#"
-                        style={{
-                            backgroundColor: "#f97316",
-                            color: "#fff",
-                            fontSize: "14px",
-                            fontWeight: 600,
-                            padding: "8px 18px",
-                            borderRadius: "8px",
-                            textDecoration: "none",
-                        }}
-                    >
-                        + Novo Aluno
-                    </a>
-                </div>
+            <input
+                type="text"
+                name="busca-aluno"
+                id="busca-aluno"
+                placeholder="Buscar aluno"
+                style={{ width: "100%", maxWidth: "1200px", margin: "0 auto 16px auto", padding: "10px 12px", borderBottom: "2px solid #ff7300", borderTop: "none", borderLeft: "none", borderRight: "none", borderRadius: "2px", fontSize: "1rem", outline: "none", boxSizing: "border-box" }}
+            />
 
-                {/* Busca */}
-                <input
-                    type="text"
-                    placeholder="Buscar aluno..."
-                    value={busca}
-                    onChange={handleBusca}
-                    style={{
-                        width: "100%",
-                        marginBottom: "16px",
-                        padding: "10px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid var(--border)",
-                        backgroundColor: "var(--bg)",
-                        color: "var(--text-h)",
-                        fontSize: "14px",
-                        outline: "none",
-                        boxSizing: "border-box",
-                        fontFamily: "var(--sans)"
-                    }}
-                />
-
-                {/* Tabela */}
-                <div style={{
-                    backgroundColor: "var(--bg)",
-                    borderRadius: "12px",
-                    border: "1px solid var(--border)",
-                    overflow: "hidden"
-                }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+            <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto", flex: 1, display: "flex", flexDirection: "column", backgroundColor: "#ffffff", borderRadius: "12px", boxShadow: "0px 4px 12px rgba(0,0,0,0.1)", border: "1px solid #e0e0e0", overflow: "hidden" }}>
+                <div style={{ flex: 1, overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
                         <thead>
-                            <tr style={{ backgroundColor: "var(--code-bg)" }}>
-                                {["Nome", "CPF", "Telefone", "Status", "Ações"].map((col, i) => (
-                                    <th key={col} style={{
-                                        padding: "12px 16px",
-                                        textAlign: i === 0 ? "left" : "center",
-                                        color: "var(--text)",
-                                        fontWeight: 600,
-                                        fontSize: "12px",
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.05em",
-                                        borderBottom: "1px solid var(--border)"
-                                    }}>
-                                        {col}
-                                    </th>
-                                ))}
+                            <tr style={{ backgroundColor: "#ff7300" }}>
+                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "left", borderBottom: "1px solid #e06600" }}>Nome</th>
+                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "left", borderBottom: "1px solid #e06600" }}>CPF</th>
+                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "left", borderBottom: "1px solid #e06600" }}>Telefone</th>
+                                <th style={{ padding: "14px 16px", color: "#ffffff", textAlign: "center", borderBottom: "1px solid #e06600" }}>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {alunosPaginados.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} style={{ padding: "40px", textAlign: "center", color: "var(--text)" }}>
-                                        Nenhum aluno encontrado.
-                                    </td>
-                                </tr>
-                            ) : (
-                                alunosPaginados.map((aluno, index) => (
-                                    <tr
-                                        key={aluno.cpf ?? index}
-                                        style={{ borderBottom: "1px solid var(--border)" }}
-                                    >
-                                        <td style={{ padding: "14px 16px", textAlign: "left", fontWeight: 500, color: "var(--text-h)" }}>
-                                            {aluno.nome} {aluno.sobrenome}
-                                        </td>
-                                        <td style={{ padding: "14px 16px", textAlign: "center", color: "var(--text)" }}>
-                                            {aluno.cpf}
-                                        </td>
-                                        <td style={{ padding: "14px 16px", textAlign: "center", color: "var(--text)" }}>
-                                            {aluno.celular}
-                                        </td>
-                                        <td style={{ padding: "14px 16px", textAlign: "center" }}>
-                                            <span style={{
-                                                padding: "4px 12px",
-                                                borderRadius: "999px",
-                                                fontSize: "12px",
-                                                fontWeight: 600,
-                                                color: "#fff",
-                                                backgroundColor: aluno.statusAluno === "ATIVO"
-                                                    ? "#22c55e"
-                                                    : aluno.statusAluno === "INATIVO"
-                                                        ? "#f97316"
-                                                        : "#eab308"
-                                            }}>
-                                                {aluno.statusAluno === "ATIVO" ? "Ativo" : "Inativo"}
-                                            </span>
-                                        </td>
-                                        <td style={{ padding: "14px 16px", textAlign: "center" }}>
+                            {currentAlunos && currentAlunos.length > 0 ? (
+                                currentAlunos.map((aluno, index) => (
+                                    <tr key={index} style={{ borderBottom: "1px solid #e0e0e0" }}>
+                                        <td style={{ padding: "12px 16px", color: "#000000", fontWeight: 600 }}>{aluno.nome} {aluno.sobrenome}</td>
+                                        <td style={{ padding: "12px 16px", color: "#000000" }}>{aluno.cpf}</td>
+                                        <td style={{ padding: "12px 16px", color: "#000000" }}>{aluno.celular}</td>
+                                        <td style={{ padding: "12px 16px", textAlign: "center" }}>
                                             <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                                                <a href="#" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "6px", textDecoration: "none", fontWeight: 500, backgroundColor: "#e0f2fe", color: "#0369a1", border: "1px solid #bae6fd" }}>Detalhes</a>
-                                                <a href="#" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "6px", textDecoration: "none", fontWeight: 500, backgroundColor: "#dcfce7", color: "#15803d", border: "1px solid #bbf7d0" }}>Editar</a>
-                                                <a href="#" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "6px", textDecoration: "none", fontWeight: 500, backgroundColor: "#fee2e2", color: "#b91c1c", border: "1px solid #fecaca" }}>Deletar</a>
+                                                <button
+                                                    onClick={() => navigate(`/detalhes/aluno/${aluno.cpf}`)}
+                                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "none", backgroundColor: "#fff3e0", color: "#ff7300", fontWeight: 500, cursor: "pointer", fontSize: "0.85rem" }}
+                                                >
+                                                    Detalhes
+                                                </button>
+                                                <button style={{ padding: "6px 12px", borderRadius: "6px", border: "none", backgroundColor: "#e0f2e9", color: "#15803d", fontWeight: 500, cursor: "pointer", fontSize: "0.85rem" }}>
+                                                    Atualizar
+                                                </button>
+                                                <button style={{ padding: "6px 12px", borderRadius: "6px", border: "none", backgroundColor: "#fee2e2", color: "#b91c1c", fontWeight: 500, cursor: "pointer", fontSize: "0.85rem" }}>
+                                                    Deletar
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
                                 ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={4} style={{ textAlign: "center", padding: "40px", color: "#999999", fontStyle: "italic" }}>
+                                        Nenhum aluno encontrado
+                                    </td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
 
-                {/* Paginação */}
-                {totalPaginas > 1 && (
-                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "6px", marginTop: "20px", alignItems: "center" }}>
-                        <PaginaBtn onClick={() => setPaginaAtual(p => Math.max(p - 1, 1))} disabled={paginaAtual === 1}>
-                            &lt;
-                        </PaginaBtn>
-                        {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(num => (
-                            <PaginaBtn key={num} onClick={() => setPaginaAtual(num)} ativo={paginaAtual === num}>
-                                {num}
-                            </PaginaBtn>
+                <div style={{ backgroundColor: "#f9f9f9", borderTop: "1px solid #e0e0e0", padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <p style={{ fontSize: "0.85rem", color: "#000000" }}>
+                        Mostrando <strong>{indexOfFirstRow + 1}</strong> até <strong>{Math.min(indexOfLastRow, alunos.length)}</strong> de <strong>{alunos.length}</strong> resultados
+                    </p>
+                    <div style={{ display: "flex", gap: "4px" }}>
+                        <button
+                            onClick={() => paginate(Math.max(1, currentPage - 1))}
+                            disabled={currentPage === 1}
+                            style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #e0e0e0", backgroundColor: "#ffffff", color: "#000000", cursor: currentPage === 1 ? "not-allowed" : "pointer", opacity: currentPage === 1 ? 0.5 : 1, fontSize: "0.85rem" }}
+                        >
+                            Anterior
+                        </button>
+                        {[...Array(totalPages)].map((_, i) => (
+                            <button
+                                key={i + 1}
+                                onClick={() => paginate(i + 1)}
+                                style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #e0e0e0", backgroundColor: currentPage === i + 1 ? "#ff7300" : "#ffffff", color: currentPage === i + 1 ? "#ffffff" : "#000000", cursor: "pointer", fontSize: "0.85rem", fontWeight: currentPage === i + 1 ? 600 : 400 }}
+                            >
+                                {i + 1}
+                            </button>
                         ))}
-                        <PaginaBtn onClick={() => setPaginaAtual(p => Math.min(p + 1, totalPaginas))} disabled={paginaAtual === totalPaginas}>
-                            &gt;
-                        </PaginaBtn>
+                        <button
+                            onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+                            disabled={currentPage === totalPages}
+                            style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #e0e0e0", backgroundColor: "#ffffff", color: "#000000", cursor: currentPage === totalPages ? "not-allowed" : "pointer", opacity: currentPage === totalPages ? 0.5 : 1, fontSize: "0.85rem" }}
+                        >
+                            Próximo
+                        </button>
                     </div>
-                )}
+                </div>
             </div>
         </main>
     );
 }
 
-function PaginaBtn({ onClick, disabled, ativo, children }: {
-    onClick: () => void;
-    disabled?: boolean;
-    ativo?: boolean;
-    children: React.ReactNode;
-}) {
-    return (
-        <button
-            onClick={onClick}
-            disabled={disabled}
-            style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "6px",
-                border: "1px solid var(--border)",
-                backgroundColor: ativo ? "#f97316" : "var(--bg)",
-                color: ativo ? "#fff" : "var(--text-h)",
-                fontSize: "13px",
-                fontWeight: 500,
-                cursor: disabled ? "not-allowed" : "pointer",
-                opacity: disabled ? 0.4 : 1,
-            }}
-        >
-            {children}
-        </button>
-    );
-}
-
-export default ListagemAlunos
+export default ListagemAlunos;

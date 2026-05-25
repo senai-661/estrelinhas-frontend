@@ -15,7 +15,7 @@ function RotaProtegida({ children }: { children: JSX.Element }) {
     const role = localStorage.getItem('role');
 
     const autenticado = !!(token && isAuth && AuthRequests.checkTokenExpiry());
-    const isProfessor = role === 'professor';
+    const isProfessor = role === 'professor';sc
 
     if (!autenticado || !isProfessor) {
         return <Navigate to="/login" replace />;
