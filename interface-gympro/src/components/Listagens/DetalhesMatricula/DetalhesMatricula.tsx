@@ -1,5 +1,6 @@
 import { useEffect, useState, type JSX } from "react";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import MatriculaRequests from "../../fetch/MatriculaRequests";
 import type MatriculaDTO from "../../dto/MatriculaDTO";
 
@@ -9,12 +10,26 @@ interface DetalhesMatriculaProps {
 
 function DetalhesMatricula({ id_matricula }: DetalhesMatriculaProps): JSX.Element {
     const [matricula, setMatricula] = useState<MatriculaDTO | null>(null);
+=======
+import MatriculaRequests from "../../../fetch/MatriculaRequests";
+
+interface DetalhesMatriculaProps {
+    idMatricula: number;
+}
+
+function DetalhesMatricula({ idMatricula }: DetalhesMatriculaProps): JSX.Element {
+    const [matricula, setMatricula] = useState<any | null>(null);
+>>>>>>> origin/lais-zanqueta
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
+<<<<<<< HEAD
         if (!id_matricula || isNaN(id_matricula)) {
+=======
+        if (!idMatricula || isNaN(idMatricula)) {
+>>>>>>> origin/lais-zanqueta
             setError("ID da matrícula inválido.");
             setLoading(false);
             return;
@@ -23,6 +38,7 @@ function DetalhesMatricula({ id_matricula }: DetalhesMatriculaProps): JSX.Elemen
         async function buscarDados() {
             setLoading(true);
             setError(null);
+<<<<<<< HEAD
 
                 try {
                 const dados = await MatriculaRequests.obterMatriculaPorId(id_matricula);
@@ -51,6 +67,12 @@ function DetalhesMatricula({ id_matricula }: DetalhesMatriculaProps): JSX.Elemen
                         console.warn('Erro ao buscar detalhes do plano:', err);
                     }
 
+=======
+            try {
+                const dados = await MatriculaRequests.obterMatriculaPorId(idMatricula);
+                if (dados) {
+                    setMatricula(dados);
+>>>>>>> origin/lais-zanqueta
                 } else {
                     setError("Matrícula não encontrada.");
                 }
@@ -63,6 +85,7 @@ function DetalhesMatricula({ id_matricula }: DetalhesMatriculaProps): JSX.Elemen
         }
 
         buscarDados();
+<<<<<<< HEAD
     }, [id_matricula]);
 
     const formatarData = (data: Date | string | undefined) => {
@@ -99,6 +122,19 @@ function DetalhesMatricula({ id_matricula }: DetalhesMatriculaProps): JSX.Elemen
                                 <div className="bg-white rounded-xl border border-gray-200 p-6 h-40"></div>
                                 <div className="bg-white rounded-xl border border-gray-200 p-6 h-40"></div>
                             </div>
+=======
+    }, [idMatricula]);
+
+    if (loading) {
+        return (
+            <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 16px" }}>
+                <div style={{ width: "100%", maxWidth: "900px" }}>
+                    <div style={{ display: "flex", gap: "24px" }}>
+                        <div style={{ width: "256px", backgroundColor: "#ffffff", borderRadius: "16px", height: "320px", flexShrink: 0 }} />
+                        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px" }}>
+                            <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", height: "176px" }} />
+                            <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", height: "176px" }} />
+>>>>>>> origin/lais-zanqueta
                         </div>
                     </div>
                 </div>
@@ -108,6 +144,7 @@ function DetalhesMatricula({ id_matricula }: DetalhesMatriculaProps): JSX.Elemen
 
     if (error || !matricula) {
         return (
+<<<<<<< HEAD
             <div className="alunos-page">
                 <div className="alunos-page__content">
                     <div className="alunos-card flex items-center justify-center p-8">
@@ -125,11 +162,24 @@ function DetalhesMatricula({ id_matricula }: DetalhesMatriculaProps): JSX.Elemen
                             </button>
                         </div>
                     </div>
+=======
+            <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
+                <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "40px", maxWidth: "400px", width: "100%", textAlign: "center" }}>
+                    <h2 style={{ fontSize: "1.1rem", fontWeight: "bold", color: "#000000", marginBottom: "8px" }}>Erro ao carregar matrícula</h2>
+                    <p style={{ fontSize: "0.875rem", color: "#999999", marginBottom: "24px" }}>{error || "Erro desconhecido."}</p>
+                    <button
+                        onClick={() => navigate("/lista/matriculas")}
+                        style={{ padding: "10px 24px", backgroundColor: "#ff7300", color: "#ffffff", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer", fontSize: "0.875rem" }}
+                    >
+                        Voltar para a lista
+                    </button>
+>>>>>>> origin/lais-zanqueta
                 </div>
             </div>
         );
     }
 
+<<<<<<< HEAD
     const iniciais = inicialAluno;
 
     return (
@@ -251,6 +301,105 @@ function DetalhesMatricula({ id_matricula }: DetalhesMatriculaProps): JSX.Elemen
                                 </div>
                             </div>
                         </div>
+=======
+    const formatarData = (data: string | Date) => {
+        try {
+            const d = new Date(data);
+            if (isNaN(d.getTime())) return "Não informado";
+            return d.toLocaleDateString("pt-BR");
+        } catch {
+            return "Não informado";
+        }
+    };
+
+    const formatarValor = (valor: number) => {
+        return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    };
+
+    return (
+        <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", padding: "32px 16px" }}>
+            <div style={{ width: "100%", maxWidth: "900px", margin: "0 auto" }}>
+
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.875rem", marginBottom: "24px" }}>
+                    <button
+                        onClick={() => navigate("/lista/matriculas")}
+                        style={{ color: "#ff7300", fontWeight: "600", background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem" }}
+                    >
+                        Matrículas
+                    </button>
+                    <span style={{ color: "#999999" }}>/</span>
+                    <span style={{ color: "#666666", fontWeight: "500" }}>Matrícula #{matricula.idMatricula}</span>
+                </div>
+
+                <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
+
+                    <div style={{ width: "256px", flexShrink: 0, backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #f0f0f0", padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+                        <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#ff7300", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff", fontSize: "1.5rem", fontWeight: "bold" }}>
+                            #{matricula.idMatricula}
+                        </div>
+
+                        <div style={{ textAlign: "center" }}>
+                            <h2 style={{ fontSize: "1rem", fontWeight: "bold", color: "#000000", margin: 0 }}>Matrícula #{matricula.idMatricula}</h2>
+                        </div>
+
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "4px 12px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: "600", backgroundColor: matricula.statusMatricula === "ATIVA" ? "#f0fdf4" : "#fef2f2", color: matricula.statusMatricula === "ATIVA" ? "#15803d" : "#b91c1c" }}>
+                            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: matricula.statusMatricula === "ATIVA" ? "#22c55e" : "#ef4444" }} />
+                            {matricula.statusMatricula}
+                        </span>
+
+                        <div style={{ width: "100%", borderTop: "1px solid #f0f0f0", marginTop: "8px" }} />
+
+                        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <button
+                                onClick={() => navigate(`/atualizar/matricula/${matricula.idMatricula}`)}
+                                style={{ width: "100%", backgroundColor: "#ff7300", color: "#ffffff", border: "none", borderRadius: "10px", padding: "10px", fontWeight: "bold", cursor: "pointer", fontSize: "0.875rem" }}
+                            >
+                                Editar Matrícula
+                            </button>
+                            <button
+                                onClick={() => navigate("/lista/matriculas")}
+                                style={{ width: "100%", backgroundColor: "#ffffff", color: "#000000", border: "1px solid #e0e0e0", borderRadius: "10px", padding: "10px", fontWeight: "bold", cursor: "pointer", fontSize: "0.875rem" }}
+                            >
+                                Voltar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px", minWidth: "280px" }}>
+
+                        <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #f0f0f0", padding: "24px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+                                <div style={{ width: "28px", height: "28px", borderRadius: "8px", backgroundColor: "#ff7300", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <i className="pi pi-id-card" style={{ color: "#ffffff", fontSize: "0.75rem" }} />
+                                </div>
+                                <h3 style={{ fontSize: "0.875rem", fontWeight: "bold", color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Dados da Matrícula</h3>
+                            </div>
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                <Campo label="ID da Matrícula" valor={String(matricula.idMatricula)} icone="pi-hashtag" />
+                                <Campo label="Status" valor={matricula.statusMatricula} icone="pi-info-circle" />
+                                <Campo label="ID do Aluno" valor={String(matricula.codAluno)} icone="pi-user" />
+                                <Campo label="ID do Plano" valor={String(matricula.codPlano)} icone="pi-book" />
+                            </div>
+                        </div>
+
+                        <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #f0f0f0", padding: "24px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+                                <div style={{ width: "28px", height: "28px", borderRadius: "8px", backgroundColor: "#ff7300", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <i className="pi pi-calendar" style={{ color: "#ffffff", fontSize: "0.75rem" }} />
+                                </div>
+                                <h3 style={{ fontSize: "0.875rem", fontWeight: "bold", color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Período e Pagamento</h3>
+                            </div>
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                <Campo label="Data de Início" valor={formatarData(matricula.dataMatricula)} icone="pi-calendar" />
+                                <Campo label="Data de Término" valor={formatarData(matricula.dataVencimento)} icone="pi-calendar" />
+                                <Campo label="Forma de Pagamento" valor={matricula.formaPagamento ?? "Não informado"} icone="pi-credit-card" />
+                                <Campo label="Valor Final" valor={formatarValor(Number(matricula.valorPago))} icone="pi-dollar" />
+                            </div>
+                        </div>
+
+>>>>>>> origin/lais-zanqueta
                     </div>
                 </div>
             </div>
@@ -258,4 +407,27 @@ function DetalhesMatricula({ id_matricula }: DetalhesMatriculaProps): JSX.Elemen
     );
 }
 
+<<<<<<< HEAD
+=======
+interface CampoProps {
+    label: string;
+    valor: string;
+    icone: string;
+}
+
+function Campo({ label, valor, icone }: CampoProps) {
+    return (
+        <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", padding: "12px", borderRadius: "10px", backgroundColor: "#f9f9f9" }}>
+            <div style={{ width: "32px", height: "32px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <i className={`pi ${icone}`} style={{ color: "#ff7300", fontSize: "0.875rem" }} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ fontSize: "0.7rem", color: "#999999", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</span>
+                <span style={{ fontSize: "0.875rem", fontWeight: "600", color: "#000000", marginTop: "2px" }}>{valor}</span>
+            </div>
+        </div>
+    );
+}
+
+>>>>>>> origin/lais-zanqueta
 export default DetalhesMatricula;

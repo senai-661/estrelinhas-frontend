@@ -2,9 +2,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+<<<<<<< HEAD
   min-height: calc(100vh - 72px);
   background: linear-gradient(180deg, #fffdf9 0%, #fff5e6 40%, #ffffff 100%);
   padding: 2rem 0;
+=======
+  height: 88vh;
+  background: linear-gradient(180deg, #fffdf9 0%, #fff5e6 45%, #ffffff 100%);
+  position: relative;
+  overflow: hidden;
+>>>>>>> origin/lais-zanqueta
 }
 
 .login-form-container::before {
@@ -20,6 +27,7 @@
 
 .login-form {
   background-color: #ffffff;
+<<<<<<< HEAD
   padding: 2.75rem;
   border-radius: 28px;
   box-shadow: 0px 30px 80px rgba(15, 23, 42, 0.09);
@@ -34,10 +42,20 @@
 .login-form:hover {
   box-shadow: 0px 36px 110px rgba(15, 23, 42, 0.12);
   transform: translateY(-4px);
+=======
+  padding: 2rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  border-top: 4px solid #ff7300;
+>>>>>>> origin/lais-zanqueta
 }
 
 .login-form h2 {
   text-align: center;
+<<<<<<< HEAD
   margin: 0 0 30px 0;
   color: #000000;
   font-size: 1.8rem;
@@ -53,18 +71,37 @@
 
 .form-group {
   margin-bottom: 20px;
+=======
+  margin-bottom: 20px;
+  color: #000000;
+}
+
+.login-header {
+  font-size: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 15px;
+>>>>>>> origin/lais-zanqueta
 }
 
 .form-group label {
   display: block;
+<<<<<<< HEAD
   margin-bottom: 8px;
   color: #1a1a1a;
   font-weight: 600;
   font-size: 0.95rem;
+=======
+  margin-bottom: 5px;
+  color: #000000;
+  font-size: 0.9rem;
+>>>>>>> origin/lais-zanqueta
 }
 
 .form-group input {
   width: 100%;
+<<<<<<< HEAD
   padding: 12px 14px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
@@ -77,17 +114,28 @@
 
 .form-group input::placeholder {
   color: #999999;
+=======
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1rem;
+>>>>>>> origin/lais-zanqueta
 }
 
 .form-group input:focus {
   outline: none;
   border-color: #ff7300;
+<<<<<<< HEAD
   background-color: #fffbf0;
   box-shadow: 0px 0px 0px 3px rgba(255, 115, 0, 0.1);
+=======
+>>>>>>> origin/lais-zanqueta
 }
 
 .login-button {
   width: 100%;
+<<<<<<< HEAD
   padding: 16px;
   margin-top: 2.5rem;
   background: linear-gradient(135deg, #fb7a2c 0%, #ff9c3e 100%);
@@ -99,6 +147,18 @@
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
   box-shadow: 0px 18px 36px rgba(251, 122, 44, 0.18);
+=======
+  padding: 14px;
+  margin-top: 2.5rem;
+  background: linear-gradient(135deg, #ff7300 0%, #ff8c00 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow: 0px 15px 30px rgba(255, 115, 0, 0.2);
+>>>>>>> origin/lais-zanqueta
   text-transform: uppercase;
   letter-spacing: 0.75px;
   display: inline-flex;
@@ -119,4 +179,23 @@
 .input-email-login,
 .input-password-login {
   margin-top: 0.75rem;
+<<<<<<< HEAD
+=======
+}
+
+@media (max-width: 480px) {
+  .login-form-container {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .login-form {
+    padding: 1.5rem 1rem;
+  }
+
+  .login-header {
+    font-size: 1.25rem;
+  }
+>>>>>>> origin/lais-zanqueta
 }

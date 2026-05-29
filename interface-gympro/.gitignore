@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
+=======
+
+vite-env.d.ts
+
+global.d.ts
+>>>>>>> origin/lais-zanqueta

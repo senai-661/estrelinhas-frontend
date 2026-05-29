@@ -1,4 +1,5 @@
 import { type JSX } from "react";
+<<<<<<< HEAD
 
 // Componentes
 import Navegacao from "../../components/Navegacao/Navegacao";
@@ -14,6 +15,17 @@ function PLogin(): JSX.Element {
                 <LoginForm />
             </main>
         </>
+=======
+import LoginForm from "../../components/FormLogin/FormLogin";
+import Rodape from "../../components/Rodape/Rodape";
+
+function PLogin(): JSX.Element {
+    return (
+        <main className="pagina-grid">
+            <LoginForm />
+            <Rodape />
+        </main>
+>>>>>>> origin/lais-zanqueta
     );
 }
 

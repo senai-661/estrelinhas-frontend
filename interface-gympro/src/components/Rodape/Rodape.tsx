@@ -2,8 +2,9 @@ import type { JSX } from "react";
 
 function Rodape(): JSX.Element {
     return (
-        <footer className="app-footer">
-            <p>GymPro © 2026 — Todos os direitos reservados</p>
+        <footer style={{ backgroundColor: "#ff7300", height: "12vh", display: "flex", alignItems: "center", justifyContent: "space-around" }}>
+            <p style={{ color: "#ffffff", fontSize: "1.25rem" }}>Copyright - Todos os direitos e esquerdos reservados</p>
+            <p style={{ color: "#ffffff", fontSize: "1.25rem" }}>Marianna Monari</p>
         </footer>
     );
 }

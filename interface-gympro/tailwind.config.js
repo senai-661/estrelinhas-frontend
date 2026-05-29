@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+<<<<<<< HEAD
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -40,6 +41,11 @@ export default {
         card: '0 2px 12px 0 rgba(0,0,0,0.07)',
       },
     },
+=======
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {},
+>>>>>>> origin/lais-zanqueta
   },
   plugins: [],
 }
