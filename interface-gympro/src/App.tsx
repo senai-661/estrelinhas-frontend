@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Navegacao from './components/Navegacao/Navegacao'; 
+import ProtectedRoute from './components/Rotas/ProtectedRoutes';
 import PHome from './pages/PHome/PHome';
 import PLogin from './pages/PLogin/PLogin';
 import PListagemAluno from './pages/PListagem/PListagemAluno/PListagemAluno';
@@ -8,53 +8,35 @@ import PListagemPlano from './pages/PListagem/PListagemPlano/PListagemPlano';
 import PDetalhesAluno from './pages/PDetalhes/PDetalhesAlunos/PDetalhesAlunos';
 import PDetalhesMatricula from './pages/PDetalhes/PDetalhesMatricula/PDetalhesMatricula';
 import PDetalhesPlano from './pages/PDetalhes/PDetalhesPlano/PDetalhesPlano';
-import AuthRequests from './fetch/AuthRequests';
 import { type JSX } from 'react';
 
-function RotaProtegida({ children }: { children: JSX.Element }) {
-    const token = localStorage.getItem('token');
-    const isAuth = localStorage.getItem('isAuth');
-    const role = localStorage.getItem('role');
 
-    const autenticado = !!(token && isAuth && AuthRequests.checkTokenExpiry());
-    const isProfessor = role?.toLowerCase() === 'admin';
-
-    if (!autenticado || !isProfessor) {
-        return <Navigate to="/login" replace />;
-    }
-
-    return children;
-}
 
 function App() {
     return (
         <BrowserRouter>
-
-            <Navegacao /> 
-
             <Routes>
                 <Route path='/' element={<PHome />} />
                 <Route path='/login' element={<PLogin />} />
-
                 <Route path='/lista/alunos' element={
-                    <RotaProtegida><PListagemAluno /></RotaProtegida>
+                    <ProtectedRoute element={PListagemAluno} />
                 } />
                 <Route path='/lista/matriculas' element={
-                    <RotaProtegida><PListagemMatricula /></RotaProtegida>
+                    <ProtectedRoute element={PListagemMatricula} />
                 } />
                 <Route path='/lista/planos' element={
-                    <RotaProtegida><PListagemPlano /></RotaProtegida>
+                    <ProtectedRoute element={PListagemPlano} />
                 } />
 
-           
+
                 <Route path='/detalhes/aluno/:id_aluno' element={
-                    <RotaProtegida><PDetalhesAluno /></RotaProtegida>
+                    <ProtectedRoute element={PDetalhesAluno} />
                 } />
                 <Route path='/detalhes/matricula/:id_matricula' element={
-                    <RotaProtegida><PDetalhesMatricula /></RotaProtegida>
+                    <ProtectedRoute element={PDetalhesMatricula} />
                 } />
                 <Route path='/detalhes/plano/:id_plano' element={
-                    <RotaProtegida><PDetalhesPlano /></RotaProtegida>
+                    <ProtectedRoute element={PDetalhesPlano} />
                 } />
 
             </Routes>
