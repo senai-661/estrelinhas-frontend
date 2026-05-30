@@ -1,4 +1,7 @@
 import { useState, type JSX } from "react";
+import { Menubar } from 'primereact/menubar';
+import type { MenuItem } from 'primereact/menuitem';
+import { Avatar } from 'primereact/avatar';
 import { useNavigate } from 'react-router-dom';
 import AuthRequests from "../../fetch/AuthRequests";
 
