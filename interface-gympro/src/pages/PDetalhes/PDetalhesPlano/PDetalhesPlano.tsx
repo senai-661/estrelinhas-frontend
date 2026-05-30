@@ -3,17 +3,12 @@ import DetalhesPlano from "../../../components/Listagens/DetalhesPlanos/Detalhes
 import Rodape from "../../../components/Rodape/Rodape";
 import { useParams } from "react-router-dom";
 
-/**
- * Página de detalhes de um plano da academia GymPro.
- * Somente acessível por usuários autenticados (proteger via PrivateRoute no router).
- */
 function PDetalhesPlano(): JSX.Element {
-    const { cod_plano } = useParams(); // Recebe o código do plano pela URL
+    const { id_plano } = useParams();
 
     return (
-        <div className="min-h-screen flex flex-col">
-      
-            <DetalhesPlano cod_plano={cod_plano as string} /> {/* Envia o código para o componente */}
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+            <DetalhesPlano cod_plano={id_plano as string} />
             <Rodape />
         </div>
     );

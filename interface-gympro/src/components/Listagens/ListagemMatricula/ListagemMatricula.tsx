@@ -1,4 +1,4 @@
-import { type JSX, useEffect, useState } from "react";
+import { useState, useEffect, type JSX } from "react";
 import MatriculaRequests from "../../../fetch/MatriculaRequests";
 import AuthRequests from "../../../fetch/AuthRequests";
 import { useNavigate } from "react-router-dom";
