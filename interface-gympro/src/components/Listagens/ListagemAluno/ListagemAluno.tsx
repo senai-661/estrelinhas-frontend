@@ -73,7 +73,7 @@ function ListagemAlunos(): JSX.Element {
             {/* Barra de ações */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', marginTop: '16px' }}>
                 <button
-                    onClick={() => navigate("/novo/aluno")}
+                    onClick={() => navigate("/cadastro/aluno")}
                     style={{
                         backgroundColor: '#f97316',
                         color: 'white',

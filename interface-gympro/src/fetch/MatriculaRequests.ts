@@ -1,3 +1,5 @@
+import { MatriculaDTO } from "../dto/MatriculaDTO";
+
 class MatriculaRequests {
     private serverURL;
     private endpointMatricula;
@@ -50,6 +52,27 @@ class MatriculaRequests {
             return null;
         }
     }
+       async enviarFormularioMatricula(formmatricula: MatriculaDTO): Promise<boolean> {
+            try {
+                const token = localStorage.getItem('token');
+                const respostaAPI = await fetch(`${this.serverURL}${this.endpointMatricula}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': `${token}`
+                    },
+                    body: JSON.stringify(formmatricula)
+                });
+    
+                if (!respostaAPI.ok) throw new Error(`Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
+    
+                console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
+                return true;
+            } catch (error) {
+                console.error(`Erro ao fazer consulta à API. ${error}`);
+                return false;
+            }
+        }
 }
 
 export default new MatriculaRequests;
