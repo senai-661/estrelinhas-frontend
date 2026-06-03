@@ -1,8 +1,8 @@
 import { type JSX } from "react";
-
 import DetalhesAluno from "../../../components/Listagens/DetalhesAlunos/DetalhesAlunos";
 import Rodape from "../../../components/Rodape/Rodape";
 import { useParams } from "react-router-dom";
+import Navegacao from "../../../components/Navegacao/Navegacao";
 
 function PDetalhesAluno(): JSX.Element {
 
@@ -10,6 +10,7 @@ function PDetalhesAluno(): JSX.Element {
 
     return (
         <div className="min-h-screen flex flex-col">
+            <Navegacao />
 
             <DetalhesAluno id_aluno={Number(id_aluno)} />
 
