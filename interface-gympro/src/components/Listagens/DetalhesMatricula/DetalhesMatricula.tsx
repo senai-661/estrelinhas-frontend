@@ -77,7 +77,7 @@ function DetalhesMatricula({ idMatricula }: DetalhesMatriculaProps): JSX.Element
         try {
             const d = new Date(data);
             if (isNaN(d.getTime())) return "Não informado";
-            return d.toLocaleDateString("pt-BR");
+            return d.toLocaleDateString("pt-BR", { timeZone: "UTC" });
         } catch {
             return "Não informado";
         }
@@ -99,30 +99,30 @@ function DetalhesMatricula({ idMatricula }: DetalhesMatriculaProps): JSX.Element
                         Matrículas
                     </button>
                     <span style={{ color: "#999999" }}>/</span>
-                    <span style={{ color: "#666666", fontWeight: "500" }}>Matrícula #{matricula.idMatricula}</span>
+                    <span style={{ color: "#666666", fontWeight: "500" }}>Matrícula #{matricula.cod_matricula}</span>
                 </div>
 
                 <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
 
                     <div style={{ width: "256px", flexShrink: 0, backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #f0f0f0", padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
                         <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#ff7300", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff", fontSize: "1.5rem", fontWeight: "bold" }}>
-                            #{matricula.idMatricula}
+                            #{matricula.cod_matricula}
                         </div>
 
                         <div style={{ textAlign: "center" }}>
-                            <h2 style={{ fontSize: "1rem", fontWeight: "bold", color: "#000000", margin: 0 }}>Matrícula #{matricula.idMatricula}</h2>
+                            <h2 style={{ fontSize: "1rem", fontWeight: "bold", color: "#000000", margin: 0 }}>Matrícula #{matricula.cod_matricula}</h2>
                         </div>
 
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "4px 12px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: "600", backgroundColor: matricula.statusMatricula === "ATIVA" ? "#f0fdf4" : "#fef2f2", color: matricula.statusMatricula === "ATIVA" ? "#15803d" : "#b91c1c" }}>
-                            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: matricula.statusMatricula === "ATIVA" ? "#22c55e" : "#ef4444" }} />
-                            {matricula.statusMatricula}
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "4px 12px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: "600", backgroundColor: matricula.status_matricula?.toUpperCase() === "ATIVA" ? "#f0fdf4" : "#fef2f2", color: matricula.status_matricula?.toUpperCase() === "ATIVA" ? "#15803d" : "#b91c1c" }}>
+                            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: matricula.status_matricula?.toUpperCase() === "ATIVA" ? "#22c55e" : "#ef4444" }} />
+                            {matricula.status_matricula}
                         </span>
 
                         <div style={{ width: "100%", borderTop: "1px solid #f0f0f0", marginTop: "8px" }} />
 
                         <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
                             <button
-                                onClick={() => navigate(`/atualizar/matricula/${matricula.idMatricula}`)}
+                                onClick={() => navigate(`/atualizar/matricula/${matricula.cod_matricula}`)}
                                 style={{ width: "100%", backgroundColor: "#ff7300", color: "#ffffff", border: "none", borderRadius: "10px", padding: "10px", fontWeight: "bold", cursor: "pointer", fontSize: "0.875rem" }}
                             >
                                 Editar Matrícula
@@ -147,10 +147,10 @@ function DetalhesMatricula({ idMatricula }: DetalhesMatriculaProps): JSX.Element
                             </div>
 
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                <Campo label="ID da Matrícula" valor={String(matricula.idMatricula)} icone="pi-hashtag" />
-                                <Campo label="Status" valor={matricula.statusMatricula} icone="pi-info-circle" />
-                                <Campo label="ID do Aluno" valor={String(matricula.codAluno)} icone="pi-user" />
-                                <Campo label="ID do Plano" valor={String(matricula.codPlano)} icone="pi-book" />
+                                <Campo label="ID da Matrícula" valor={String(matricula.cod_matricula)} icone="pi-hashtag" />
+                                <Campo label="Status" valor={matricula.status_matricula ?? "—"} icone="pi-info-circle" />
+                                <Campo label="ID do Aluno" valor={String(matricula.id_aluno)} icone="pi-user" />
+                                <Campo label="ID do Plano" valor={String(matricula.id_plano)} icone="pi-book" />
                             </div>
                         </div>
 
@@ -163,10 +163,10 @@ function DetalhesMatricula({ idMatricula }: DetalhesMatriculaProps): JSX.Element
                             </div>
 
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                <Campo label="Data de Início" valor={formatarData(matricula.dataMatricula)} icone="pi-calendar" />
-                                <Campo label="Data de Término" valor={formatarData(matricula.dataVencimento)} icone="pi-calendar" />
-                                <Campo label="Forma de Pagamento" valor={matricula.formaPagamento ?? "Não informado"} icone="pi-credit-card" />
-                                <Campo label="Valor Final" valor={formatarValor(Number(matricula.valorPago))} icone="pi-dollar" />
+                                <Campo label="Data de Início" valor={formatarData(matricula.data_inicio)} icone="pi-calendar" />
+                                <Campo label="Data de Término" valor={formatarData(matricula.data_fim)} icone="pi-calendar" />
+                                <Campo label="Forma de Pagamento" valor={matricula.forma_pagamento ?? "Não informado"} icone="pi-credit-card" />
+                                <Campo label="Valor Final" valor={formatarValor(matricula.valor_final)} icone="pi-dollar" />
                             </div>
                         </div>
 
