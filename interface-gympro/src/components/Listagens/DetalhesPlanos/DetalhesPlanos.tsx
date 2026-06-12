@@ -89,7 +89,7 @@ function DetalhesPlano({ cod_plano }: DetalhesPlanoProps): JSX.Element {
                         Planos
                     </button>
                     <span style={{ color: "#999999" }}>/</span>
-                    <span style={{ color: "#666666", fontWeight: "500" }}>{plano.cod_plano}</span>
+                    <span style={{ color: "#666666", fontWeight: "500" }}>{plano.id_plano}</span>
                 </div>
 
                 <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
@@ -112,7 +112,9 @@ function DetalhesPlano({ cod_plano }: DetalhesPlanoProps): JSX.Element {
 
                         <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
                             <button
-                                onClick={() => navigate(`/atualizar/plano/${plano.cod_plano}`)}
+
+                                onClick={() => navigate(`/atualizar/plano/${plano.id_plano}`)}
+
                                 style={{ width: "100%", backgroundColor: "#ff7300", color: "#ffffff", border: "none", borderRadius: "10px", padding: "10px", fontWeight: "bold", cursor: "pointer", fontSize: "0.875rem" }}
                             >
                                 Editar Plano
@@ -137,7 +139,7 @@ function DetalhesPlano({ cod_plano }: DetalhesPlanoProps): JSX.Element {
                             </div>
 
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                <Campo label="Código do Plano" valor={plano.cod_plano} icone="pi-hashtag" />
+                                <Campo label="Código do Plano" valor={plano.id_plano} icone="pi-hashtag" />
                                 <Campo label="Tipo do Plano" valor={plano.tipo_plano} icone="pi-tag" />
                                 <Campo label="Status" valor={plano.status_plano ?? "—"} icone="pi-info-circle" />
                             </div>

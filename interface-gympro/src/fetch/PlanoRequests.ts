@@ -2,14 +2,13 @@ import type { PlanoDTO } from "../dto/PlanoDTO";
 
 function mapearPlano(item: any): PlanoDTO {
     return {
-        cod_plano: item.cod_plano,        
-        tipo_plano: item.tipo_plano,      
+        cod_plano:    Number(item.cod_plano),  
+        tipo_plano:   item.tipo_plano,
         duracao_dias: item.duracao_dias ?? 0,
-        valor: parseFloat(item.valor),
-        descricao: item.descricao,
-        status_plano: item.status_plano,  
+        valor:        parseFloat(item.valor),
+        descricao:    item.descricao,
+        status_plano: item.status_plano,
     };
-
 }
 
 class PlanoRequests {

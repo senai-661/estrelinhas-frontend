@@ -138,8 +138,8 @@ function ListagemMatriculas(): JSX.Element {
                                     <td style={tdStyle}>{matricula.forma_pagamento ?? '—'}</td>
                                     <td style={tdStyle}>
                                         <span style={{
-                                            backgroundColor: matricula.status_matricula?.toUpperCase() === 'ATIVA' ? '#dcfce7' : '#fee2e2',
-                                            color: matricula.status_matricula?.toUpperCase() === 'ATIVA' ? '#16a34a' : '#ef4444',
+                                            backgroundColor: (matricula.status_matricula?.toUpperCase() === 'ATIVA' || matricula.status_matricula?.toUpperCase() === 'ATIVO') ? '#dcfce7' : '#fee2e2',
+                                            color: (matricula.status_matricula?.toUpperCase() === 'ATIVA' || matricula.status_matricula?.toUpperCase() === 'ATIVO') ? '#16a34a' : '#ef4444',
                                             padding: '3px 12px',
                                             borderRadius: '999px',
                                             fontSize: '0.78rem',

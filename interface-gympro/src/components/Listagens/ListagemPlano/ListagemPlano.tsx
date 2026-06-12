@@ -27,7 +27,7 @@ function ListagemPlanos(): JSX.Element {
     }, []);
 
     const planosFiltrados = planos.filter((p) =>
-        `${p.cod_plano} ${p.tipo_plano} ${p.status_plano}`
+        `${p.cod_plano ?? ''} ${p.tipo_plano ?? ''} ${p.status_plano ?? ''}`
             .toLowerCase()
             .includes(busca.toLowerCase())
     );
