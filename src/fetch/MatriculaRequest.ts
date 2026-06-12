@@ -133,6 +133,10 @@ class MatriculaRequests {
     async obterListaDeMatriculas() {
         return this.getAll();
     }
+
+    async obterMatriculaPorId(id: number) {
+        return this.getById(id);
+    }
 }
 
 export default new MatriculaRequests();

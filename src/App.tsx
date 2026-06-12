@@ -5,7 +5,9 @@ import PLogin from './pages/PLogin/PLogin'
 import PListagemAluno from './pages/PListagem/PListagemAluno/PListagemAluno'
 import PListagemMatricula from './pages/PListagem/PListagemMatricula/PListagemMatricula'
 import PListagemPlanos from './pages/PListagem/PListagemPlano/PListagemPlano'
-import PDetalhesAluno from './pages/PDetalhes/PDetalhesAluno'
+import PDetalhesAluno from './pages/PDetalhesAluno/PDetalhesAluno'
+import PDetalhesMatricula from './pages/PDetalhesMatricula/PDetalhesMatricula'
+import PDetalhesPlanos from './pages/PDetalhesPlanos/PDetalhesPlano'
 
 function App() {
 
@@ -18,6 +20,8 @@ function App() {
         <Route path='/lista/matriculas' element={<PListagemMatricula />} />
         <Route path='/lista/planos' element={<PListagemPlanos />} />
         <Route path='/detalhes/aluno/:id_aluno' element={<PDetalhesAluno />} />
+        <Route path='/detalhes/matricula/:idMatricula' element={<PDetalhesMatricula />} />
+        <Route path='/detalhes/plano/:id_plano' element={<PDetalhesPlanos />} />
       </Routes>
     </BrowserRouter>
   )

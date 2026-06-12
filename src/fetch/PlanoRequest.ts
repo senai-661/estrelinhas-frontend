@@ -10,7 +10,6 @@ class PlanoRequests {
     async obterListaDePlanos() {
         try {
             const token = localStorage.getItem("token");
-
             const respostaAPI = await fetch(`${this.serverURL}${this.endpointPlano}`, {
                 method: "GET",
                 headers: {
@@ -18,7 +17,6 @@ class PlanoRequests {
                     "x-access-token": `${token}`
                 }
             });
-
             if (respostaAPI.ok) {
                 return await respostaAPI.json();
             } else {
@@ -29,6 +27,28 @@ class PlanoRequests {
             return [];
         }
     }
+
+    async obterPlanoPorId(idPlano: number) {
+        try {
+            const token = localStorage.getItem("token");
+            console.log("URL chamada:", `${this.serverURL}${this.endpointPlano}/${idPlano}`);
+            const respostaAPI = await fetch(`${this.serverURL}${this.endpointPlano}/${idPlano}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-access-token": `${token}`
+                }
+            });
+            if (respostaAPI.ok) {
+                return await respostaAPI.json();
+            } else {
+                throw new Error("Plano não encontrado.");
+            }
+        } catch (error) {
+            console.error("Erro ao buscar plano:", error);
+            throw error;
+        }
+    }
 }
 
-export default new PlanoRequests(); 
+export default new PlanoRequests();

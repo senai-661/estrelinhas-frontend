@@ -28,3 +28,4 @@ export default interface MatriculaDTO {
     forma_pagamento?: string,
     valor_final?: number
 }
+
