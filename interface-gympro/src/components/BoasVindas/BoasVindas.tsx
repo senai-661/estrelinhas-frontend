@@ -5,20 +5,6 @@ function BoasVindas(): JSX.Element {
     const navigate = useNavigate();
 
     return (
-<<<<<<< HEAD
-        <main className="hero-section">
-            <section className="hero-card">
-                <h1 className="hero-title">
-                    TRANSFORME SEU <span className="hero-highlight">CORPO</span> E <span className="hero-highlight">MENTE</span>
-                </h1>
-                <p className="hero-copy">
-                    A melhor academia da cidade está esperando por você. Equipamentos de última geração, professores qualificados e um ambiente motivador para você alcançar resultados reais.
-                </p>
-                <button type="button" className="hero-cta" onClick={() => navigate('/login')}>
-                    Comece agora
-                </button>
-            </section>
-=======
         <main style={{
             minHeight: '88vh',
             backgroundColor: '#f5f5f5',
@@ -52,13 +38,8 @@ function BoasVindas(): JSX.Element {
                     Comece agora
                 </button>
             </div>
->>>>>>> origin/lais-zanqueta
         </main>
     );
 }
 
-<<<<<<< HEAD
-export default BoasVindas;                                                                                                                                                                                                                                                              
-=======
 export default BoasVindas;
->>>>>>> origin/lais-zanqueta

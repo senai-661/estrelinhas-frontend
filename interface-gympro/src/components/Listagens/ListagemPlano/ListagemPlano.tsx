@@ -1,11 +1,6 @@
 import { type JSX, useState, useEffect } from "react";
-<<<<<<< HEAD
-import PlanoRequests from "../../fetch/PlanoRequests";
-import AuthRequests from "../../fetch/AuthRequests";
-=======
 import PlanoRequests from "../../../fetch/PlanoRequests";
 import AuthRequests from "../../../fetch/AuthRequests";
->>>>>>> origin/lais-zanqueta
 import { useNavigate } from "react-router-dom";
 
 function ListagemPlanos(): JSX.Element {
@@ -17,107 +12,24 @@ function ListagemPlanos(): JSX.Element {
     useEffect(() => {
         const buscarPlanos = async () => {
             try {
-<<<<<<< HEAD
-                const token = localStorage.getItem("token");
-                const isAuth = localStorage.getItem("isAuth");
-                if (!token || !isAuth || !AuthRequests.checkTokenExpiry()) {
-                    navigate("/login");
-=======
                 const token = localStorage.getItem('token');
                 const isAuth = localStorage.getItem('isAuth');
                 if (!token || !isAuth || !AuthRequests.checkTokenExpiry()) {
                     navigate('/login');
->>>>>>> origin/lais-zanqueta
                     return;
                 }
                 const listaDePlanos = await PlanoRequests.obterListaDePlanos();
                 setPlanos(Array.isArray(listaDePlanos) ? listaDePlanos : []);
             } catch (error) {
-<<<<<<< HEAD
-                console.error("Erro ao buscar planos:", error);
-                alert(`Erro ao carregar planos: ${error}`);
-                setPlanos([]);
-            }
-        };
-=======
                 console.error(`Erro ao buscar planos:`, error);
                 alert(`Erro ao carregar planos: ${error}`);
                 setPlanos([]);
             }
         }
->>>>>>> origin/lais-zanqueta
         buscarPlanos();
     }, [navigate]);
 
     const totalPaginas = Math.ceil(planos.length / itensPorPagina);
-<<<<<<< HEAD
-    const planosPagina = planos.slice(
-        (pagina - 1) * itensPorPagina,
-        pagina * itensPorPagina
-    );
-
-    return (
-        <main className="page-main">
-
-            <div className="page-actions" style={{ justifyContent: "space-between" }}>
-                <h1 className="page-title">PLANOS</h1>
-                <button className="btn-primary">+ Novo Plano</button>
-            </div>
-
-            <div className="table-wrapper">
-                <table className="data-table">
-                    <thead>
-                        <tr>
-                            <th>Cód. Plano</th>
-                            <th>Tipo</th>
-                            <th>Valor</th>
-                            <th>Status</th>
-                            <th className="center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {planosPagina.length > 0 ? (
-                            planosPagina.map((plano, index) => {
-                                const planoId =
-                                    plano.id_plano ?? plano.idPlano ?? plano.id ??
-                                    plano.cod_plano ?? plano.codPlano ?? plano.codigo;
-                                return (
-                                    <tr key={planoId ?? index}>
-                                        <td>{plano.codPlano}</td>
-                                        <td>{plano.tipoPlano}</td>
-                                        <td className="bold">
-                                            R$ {Number(plano.valor).toFixed(2)}
-                                        </td>
-                                        <td>
-                                            <span className={`badge ${plano.statusPlano === "ATIVO" ? "badge-active" : "badge-inactive"}`}>
-                                                {plano.statusPlano}
-                                            </span>
-                                        </td>
-                                        <td className="center">
-                                            <div className="action-group">
-                                                <button
-                                                    className="btn-details"
-                                                    onClick={() => {
-                                                        if (!planoId) {
-                                                            alert("ID do plano não encontrado.");
-                                                            return;
-                                                        }
-                                                        navigate(`/detalhes/plano/${planoId}`);
-                                                    }}
-                                                >
-                                                    Detalhes
-                                                </button>
-                                                <button className="btn-update">Atualizar</button>
-                                                <button className="btn-delete">Deletar</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })
-                        ) : (
-                            <tr>
-                                <td colSpan={5} className="table-empty">
-=======
     const planosPagina = planos.slice((pagina - 1) * itensPorPagina, pagina * itensPorPagina);
 
     const tdStyle = { padding: '14px 16px', borderBottom: '1px solid #f0f0f0', fontSize: '0.9rem', color: '#333' };
@@ -180,7 +92,6 @@ function ListagemPlanos(): JSX.Element {
                         )) : (
                             <tr>
                                 <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
->>>>>>> origin/lais-zanqueta
                                     Nenhum plano encontrado
                                 </td>
                             </tr>
@@ -189,36 +100,6 @@ function ListagemPlanos(): JSX.Element {
                 </table>
             </div>
 
-<<<<<<< HEAD
-            <div className="pagination-wrapper-end">
-                <button
-                    className="page-btn"
-                    onClick={() => setPagina((p) => Math.max(1, p - 1))}
-                    disabled={pagina === 1}
-                >
-                    {"<"}
-                </button>
-
-                {Array.from({ length: totalPaginas }, (_, i) => (
-                    <button
-                        key={i + 1}
-                        className={`page-btn ${pagina === i + 1 ? "active" : ""}`}
-                        onClick={() => setPagina(i + 1)}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
-
-                <button
-                    className="page-btn"
-                    onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
-                    disabled={pagina === totalPaginas || totalPaginas === 0}
-                >
-                    {">"}
-                </button>
-            </div>
-
-=======
             <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', marginTop: '20px' }}>
                 <button onClick={() => setPagina(p => Math.max(1, p - 1))} disabled={pagina === 1}
                     style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #e0e0e0', background: '#fff', cursor: 'pointer' }}>{'<'}</button>
@@ -234,7 +115,6 @@ function ListagemPlanos(): JSX.Element {
                 <button onClick={() => setPagina(p => Math.min(totalPaginas, p + 1))} disabled={pagina === totalPaginas}
                     style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #e0e0e0', background: '#fff', cursor: 'pointer' }}>{'>'}</button>
             </div>
->>>>>>> origin/lais-zanqueta
         </main>
     );
 }
