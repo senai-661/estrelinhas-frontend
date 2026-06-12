@@ -89,30 +89,32 @@ function DetalhesPlano({ cod_plano }: DetalhesPlanoProps): JSX.Element {
                         Planos
                     </button>
                     <span style={{ color: "#999999" }}>/</span>
-                    <span style={{ color: "#666666", fontWeight: "500" }}>{plano.codPlano}</span>
+                    <span style={{ color: "#666666", fontWeight: "500" }}>{plano.id_plano}</span>
                 </div>
 
                 <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
 
                     <div style={{ width: "256px", flexShrink: 0, backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #f0f0f0", padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
                         <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#ff7300", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff", fontSize: "1rem", fontWeight: "bold" }}>
-                            {plano.codPlano}
+                            {plano.cod_plano}
                         </div>
 
                         <div style={{ textAlign: "center" }}>
-                            <h2 style={{ fontSize: "1rem", fontWeight: "bold", color: "#000000", margin: 0 }}>{plano.tipoPlano}</h2>
+                            <h2 style={{ fontSize: "1rem", fontWeight: "bold", color: "#000000", margin: 0 }}>{plano.tipo_plano}</h2>
                         </div>
 
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "4px 12px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: "600", backgroundColor: plano.statusPlano === "ATIVO" ? "#f0fdf4" : "#fef2f2", color: plano.statusPlano === "ATIVO" ? "#15803d" : "#b91c1c" }}>
-                            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: plano.statusPlano === "ATIVO" ? "#22c55e" : "#ef4444" }} />
-                            {plano.statusPlano}
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "4px 12px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: "600", backgroundColor: plano.status_plano?.toUpperCase() === "ATIVO" ? "#f0fdf4" : "#fef2f2", color: plano.status_plano?.toUpperCase() === "ATIVO" ? "#15803d" : "#b91c1c" }}>
+                            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: plano.status_plano?.toUpperCase() === "ATIVO" ? "#22c55e" : "#ef4444" }} />
+                            {plano.status_plano}
                         </span>
 
                         <div style={{ width: "100%", borderTop: "1px solid #f0f0f0", marginTop: "8px" }} />
 
                         <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
                             <button
-                                onClick={() => navigate(`/atualizar/plano/${plano.codPlano}`)}
+
+                                onClick={() => navigate(`/atualizar/plano/${plano.id_plano}`)}
+
                                 style={{ width: "100%", backgroundColor: "#ff7300", color: "#ffffff", border: "none", borderRadius: "10px", padding: "10px", fontWeight: "bold", cursor: "pointer", fontSize: "0.875rem" }}
                             >
                                 Editar Plano
@@ -137,9 +139,9 @@ function DetalhesPlano({ cod_plano }: DetalhesPlanoProps): JSX.Element {
                             </div>
 
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                <Campo label="Código do Plano" valor={plano.codPlano} icone="pi-hashtag" />
-                                <Campo label="Tipo do Plano" valor={plano.tipoPlano} icone="pi-tag" />
-                                <Campo label="Status" valor={plano.statusPlano} icone="pi-info-circle" />
+                                <Campo label="Código do Plano" valor={plano.id_plano} icone="pi-hashtag" />
+                                <Campo label="Tipo do Plano" valor={plano.tipo_plano} icone="pi-tag" />
+                                <Campo label="Status" valor={plano.status_plano ?? "—"} icone="pi-info-circle" />
                             </div>
                         </div>
 
@@ -152,7 +154,7 @@ function DetalhesPlano({ cod_plano }: DetalhesPlanoProps): JSX.Element {
                             </div>
 
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                <Campo label="Valor" valor={formatarValor(Number(plano.valor))} icone="pi-credit-card" />
+                                <Campo label="Valor" valor={formatarValor(plano.valor)} icone="pi-credit-card" />
                                 <Campo label="Descrição" valor={plano.descricao || "Sem descrição cadastrada."} icone="pi-file" />
                             </div>
                         </div>
