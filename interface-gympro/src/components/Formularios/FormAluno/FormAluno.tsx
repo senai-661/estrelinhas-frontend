@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AlunoRequests from '../../../fetch/AlunoRequests';
 import type AlunoDTO from '../../../dto/AlunoDTO';
-import Utilitario from '../../../utils/Utilitario';
+import Utilitario from '../../../utils/Utilitario.ts';
 
 function FormAluno() {
     const navigate = useNavigate();
@@ -35,26 +35,26 @@ function FormAluno() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    if (!Utilitario.validarEmail(formData.email)) {
-        alert("E-mail inválido");
-        return;
-    }
+        if (!Utilitario.validarEmail(formData.email)) {
+            alert("E-mail inválido");
+            return;
+        }
 
-    const dadosParaEnviar: AlunoDTO = {
-        ...formData,
-        cpf: formData.cpf.replace(/\D/g, '') 
+        const dadosParaEnviar: AlunoDTO = {
+            ...formData,
+            cpf: formData.cpf.replace(/\D/g, '')
+        };
+
+        const resposta = await AlunoRequests.enviarFormularioAluno(dadosParaEnviar);
+        if (resposta) {
+            alert("Aluno cadastrado com sucesso");
+        } else {
+            alert("Erro ao cadastrar aluno");
+        }
     };
-
-    const resposta = await AlunoRequests.enviarFormularioAluno(dadosParaEnviar);
-    if (resposta) {
-        alert("Aluno cadastrado com sucesso");
-    } else {
-        alert("Erro ao cadastrar aluno");
-    }
-};
 
     return (
         <main className="bg-gray-100 flex-1 py-8 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-y-auto">

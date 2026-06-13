@@ -1,5 +1,16 @@
 import type { PlanoDTO } from "../dto/PlanoDTO";
 
+function mapearPlano(item: any): PlanoDTO {
+    return {
+        cod_plano:    Number(item.cod_plano),  
+        tipo_plano:   item.tipo_plano,
+        duracao_dias: item.duracao_dias ?? 0,
+        valor:        parseFloat(item.valor),
+        descricao:    item.descricao,
+        status_plano: item.status_plano,
+    };
+}
+
 class PlanoRequests {
     private serverURL;
     private endpointPlano;
@@ -20,7 +31,8 @@ class PlanoRequests {
 
         if (!respostaAPI.ok) throw new Error(`Erro ao buscar planos: ${respostaAPI.statusText}`);
 
-        return respostaAPI.json();
+        const dados = await respostaAPI.json();
+        return dados.map(mapearPlano);
     }
 
     async obterPlanoPorId(cod_plano: string): Promise<PlanoDTO | null> {
@@ -35,7 +47,8 @@ class PlanoRequests {
         if (respostaAPI.status === 404) return null;
         if (!respostaAPI.ok) throw new Error(`Erro ao buscar plano: ${respostaAPI.statusText}`);
 
-        return respostaAPI.json();
+        const dados = await respostaAPI.json();
+        return mapearPlano(dados); 
     }
 
     async enviarFormularioPlano(formPlano: PlanoDTO): Promise<boolean> {

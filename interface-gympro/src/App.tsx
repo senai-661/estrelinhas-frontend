@@ -10,7 +10,7 @@ import PDetalhesMatricula from './pages/PDetalhes/PDetalhesMatricula/PDetalhesMa
 import PDetalhesPlano from './pages/PDetalhes/PDetalhesPlano/PDetalhesPlano';
 import PCadastroAluno from './pages/PCadastro/PCadastroAluno/PCadastroAluno';
 import PCadastroPlano from './pages/PCadastro/PCadastroPlano/PCadastroPlano';
-import PCadastroMatricula from './pages/PCadastro/PCadastroMatricula/PCadatroMatricula';
+import PCadastroMatricula from './pages/PCadastro/PCadastroMatricula/PCadastroMatricula';
 import { type JSX } from 'react';
 
 

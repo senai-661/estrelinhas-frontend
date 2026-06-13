@@ -17,6 +17,7 @@ function FormMatricula() {
         data_inicio: '',
         data_fim: '',
         forma_pagamento: '',
+        valor_final: 0,
     });
 
     useEffect(() => {
@@ -106,18 +107,25 @@ function FormMatricula() {
                                     name="id_plano"
                                     id="id_plano"
                                     required
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                        const planoSelecionado = planos.find(p => p.cod_plano === Number(e.target.value));
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            id_plano: Number(e.target.value),
+                                            valor_final: planoSelecionado?.valor ?? 0
+                                        }));
+                                    }}
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all text-slate-700 bg-white"
                                 >
                                     <option value={0}>Selecione um plano</option>
                                     {planos.map(plano => (
                                         <option key={plano.cod_plano} value={plano.cod_plano}>
-                                            {plano.tipo_plano} - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(plano.valor)}
+                                            {plano.tipo_plano} - R$ {plano.valor.toFixed(2).replace('.', ',')}
                                         </option>
                                     ))}
-                                   
                                 </select>
                             </div>
+
                         </div>
 
                         {/* Linha 2: Data Início e Data Fim */}
@@ -165,9 +173,10 @@ function FormMatricula() {
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all text-slate-700 bg-white"
                                 >
                                     <option value="">Selecione a forma de pagamento</option>
-                                    <option value="pix">Pix</option>
-                                    <option value="cartao">Cartão</option>
-                                    <option value="dinheiro">Dinheiro</option>
+                                    <option value="PIX">Pix</option>
+                                    <option value="CARTÃO DÉBITO">Cartão Débito</option>
+                                     <option value="CARTÃO CRÉDITO ">Cartão Crédito</option>
+                                    <option value="DIN">Dinheiro</option>
                                 </select>
                             </div>
                         </div>
@@ -181,15 +190,11 @@ function FormMatricula() {
                             className="w-full bg-slate-800 text-white py-4 rounded-xl font-bold text-lg cursor-pointer hover:bg-slate-700 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]"
                         />
 
-
-
                         <button
                             type="button"
                             onClick={() => navigate('/lista/matriculas')}
                             style={{ backgroundColor: '#F97316' }}
                             className="w-full bg-slate-800 text-white py-4 rounded-xl font-bold text-lg cursor-pointer hover:bg-slate-700 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]"
-
-
                         >
                             VOLTAR PARA LISTAGEM
                         </button>

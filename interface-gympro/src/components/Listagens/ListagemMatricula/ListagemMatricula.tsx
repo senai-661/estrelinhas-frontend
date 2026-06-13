@@ -14,7 +14,7 @@ function ListagemMatriculas(): JSX.Element {
         const buscarMatriculas = async () => {
             try {
                 const lista = await MatriculaRequests.obterListaDeMatriculas();
-                console.log(lista[0]);
+                console.log("primeiro item RAW:")
                 setMatriculas(Array.isArray(lista) ? lista : []);
             } catch (error) {
                 console.error(`Erro ao buscar matrículas. ${error}`);
@@ -138,8 +138,8 @@ function ListagemMatriculas(): JSX.Element {
                                     <td style={tdStyle}>{matricula.forma_pagamento ?? '—'}</td>
                                     <td style={tdStyle}>
                                         <span style={{
-                                            backgroundColor: matricula.status_matricula === 'ativa' ? '#dcfce7' : '#fee2e2',
-                                            color: matricula.status_matricula === 'ativa' ? '#16a34a' : '#ef4444',
+                                            backgroundColor: (matricula.status_matricula?.toUpperCase() === 'ATIVA' || matricula.status_matricula?.toUpperCase() === 'ATIVO') ? '#dcfce7' : '#fee2e2',
+                                            color: (matricula.status_matricula?.toUpperCase() === 'ATIVA' || matricula.status_matricula?.toUpperCase() === 'ATIVO') ? '#16a34a' : '#ef4444',
                                             padding: '3px 12px',
                                             borderRadius: '999px',
                                             fontSize: '0.78rem',

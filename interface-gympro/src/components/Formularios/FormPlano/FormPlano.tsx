@@ -11,7 +11,7 @@ function FormPlano() {
         duracao_dias: 0,
         valor: 0,
         descricao: '',
-        status_plano: 'ativo',
+        status_plano: 'ATIVO',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

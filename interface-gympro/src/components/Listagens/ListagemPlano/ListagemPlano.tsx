@@ -27,7 +27,7 @@ function ListagemPlanos(): JSX.Element {
     }, []);
 
     const planosFiltrados = planos.filter((p) =>
-        `${p.cod_plano} ${p.tipo_plano} ${p.status_plano}`
+        `${p.cod_plano ?? ''} ${p.tipo_plano ?? ''} ${p.status_plano ?? ''}`
             .toLowerCase()
             .includes(busca.toLowerCase())
     );
@@ -136,8 +136,8 @@ function ListagemPlanos(): JSX.Element {
                                     </td>
                                     <td style={tdStyle}>
                                         <span style={{
-                                            backgroundColor: plano.status_plano === 'ativo' ? '#dcfce7' : '#fee2e2',
-                                            color: plano.status_plano === 'ativo' ? '#16a34a' : '#ef4444',
+                                            backgroundColor: plano.status_plano?.toUpperCase() === 'ATIVO' ? '#dcfce7' : '#fee2e2',
+                                            color: plano.status_plano?.toUpperCase() === 'ATIVO' ? '#16a34a' : '#ef4444',
                                             padding: '3px 12px',
                                             borderRadius: '999px',
                                             fontSize: '0.78rem',
