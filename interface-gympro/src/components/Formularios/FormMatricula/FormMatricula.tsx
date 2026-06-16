@@ -4,7 +4,7 @@ import MatriculaRequests from '../../../fetch/MatriculaRequests';
 import AlunoRequests from '../../../fetch/AlunoRequests';
 import PlanoRequests from '../../../fetch/PlanoRequests';
 import type { MatriculaDTO } from '../../../dto/MatriculaDTO';
-import type AlunoDTO from '../../../dto/AlunoDTO';
+import type {AlunoDTO} from '../../../dto/AlunoDTO';
 import type { PlanoDTO } from '../../../dto/PlanoDTO';
 
 function FormMatricula() {
@@ -18,6 +18,7 @@ function FormMatricula() {
         data_fim: '',
         forma_pagamento: '',
         valor_final: 0,
+        status_matricula: 'ATIVA',
     });
 
     useEffect(() => {
@@ -125,6 +126,7 @@ function FormMatricula() {
                                     ))}
                                 </select>
                             </div>
+
                         </div>
 
                         {/* Linha 2: Data Início e Data Fim */}
@@ -173,7 +175,8 @@ function FormMatricula() {
                                 >
                                     <option value="">Selecione a forma de pagamento</option>
                                     <option value="PIX">Pix</option>
-                                    <option value="CARTÃO">Cartão</option>
+                                    <option value="CARTÃO DÉBITO">Cartão Débito</option>
+                                     <option value="CARTÃO CRÉDITO ">Cartão Crédito</option>
                                     <option value="DIN">Dinheiro</option>
                                 </select>
                             </div>
