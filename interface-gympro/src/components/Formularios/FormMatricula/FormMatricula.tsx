@@ -4,7 +4,7 @@ import MatriculaRequests from '../../../fetch/MatriculaRequests';
 import AlunoRequests from '../../../fetch/AlunoRequests';
 import PlanoRequests from '../../../fetch/PlanoRequests';
 import type { MatriculaDTO } from '../../../dto/MatriculaDTO';
-import type AlunoDTO from '../../../dto/AlunoDTO';
+import type {AlunoDTO} from '../../../dto/AlunoDTO';
 import type { PlanoDTO } from '../../../dto/PlanoDTO';
 
 function FormMatricula() {
@@ -18,6 +18,7 @@ function FormMatricula() {
         data_fim: '',
         forma_pagamento: '',
         valor_final: 0,
+        status_matricula: 'ATIVA',
     });
 
     useEffect(() => {

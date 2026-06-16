@@ -1,7 +1,7 @@
 import { type JSX } from "react";
 import { useState, useEffect } from "react";
 import AlunoRequests from "../../../fetch/AlunoRequests";
-import type AlunoDTO from "../../../dto/AlunoDTO";
+import type {AlunoDTO} from "../../../dto/AlunoDTO";
 import { useNavigate } from "react-router-dom";
 
 function ListagemAlunos(): JSX.Element {
@@ -25,7 +25,7 @@ function ListagemAlunos(): JSX.Element {
     }, []);
 
     const alunosFiltrados = alunos.filter((a) =>
-        `${a.nome} ${a.sobrenome} ${a.email} ${a.celular} ${a.cod_aluno}`
+`${a.nome} ${a.sobrenome} ${a.email} ${a.celular} ${a.codAluno}`
             .toLowerCase()
             .includes(busca.toLowerCase())
     );
@@ -127,7 +127,7 @@ function ListagemAlunos(): JSX.Element {
                                     onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}
                                 >
                                     <td style={tdStyle}>#{aluno.idAluno ?? '—'}</td>
-                                    <td style={tdStyle}>{aluno.cod_aluno ?? aluno.idAluno ?? '—'}</td>
+                                    <td style={tdStyle}>{aluno.codAluno ?? aluno.idAluno ?? '—'}</td>
                                     <td style={{ ...tdStyle, fontWeight: 500 }}>
                                         {aluno.nome} {aluno.sobrenome}
                                     </td>
@@ -135,14 +135,14 @@ function ListagemAlunos(): JSX.Element {
                                     <td style={tdStyle}>{aluno.celular ?? '—'}</td>
                                     <td style={tdStyle}>
                                         <span style={{
-                                            backgroundColor: aluno.statusAluno ? '#dcfce7' : '#fee2e2',
-                                            color: aluno.statusAluno ? '#16a34a' : '#ef4444',
+                                            backgroundColor: aluno.statusAluno?.toUpperCase() === 'ATIVO' ? '#dcfce7' : '#fee2e2',
+                                            color: aluno.statusAluno?.toUpperCase() === 'ATIVO' ? '#16a34a' : '#ef4444',
                                             padding: '3px 12px',
                                             borderRadius: '999px',
                                             fontSize: '0.78rem',
                                             fontWeight: 600,
                                         }}>
-                                            {aluno.statusAluno ? 'Ativo' : 'Inativo'}
+                                            {aluno.statusAluno?.toUpperCase() === 'ATIVO' ? 'Ativo' : 'Inativo'}
                                         </span>
                                     </td>
                                     <td style={{ ...tdStyle, textAlign: 'center' }}>
